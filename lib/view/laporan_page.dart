@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sakila_store_project/theme/colors.dart';
+import 'package:sakila_store_project/view/laporan_pengeluaran_list.dart';
+
 import 'package:sakila_store_project/widgets/custom_button.dart';
 
 class LaporanPage extends StatelessWidget {
@@ -12,13 +14,36 @@ class LaporanPage extends StatelessWidget {
 
   Widget _buildBody(BuildContext context) {
     return Column(children: [
-      _container('assets/calendar.png', 'Pilih Tanggal', true, false, context),
+      _container(
+          imagePath: 'assets/calendar.png',
+          text: 'Pilih Tanggal',
+          isMoreWidget: true,
+          isWidgetCenter: false,
+          context: context),
       const SizedBox(height: 16.0),
-      _container('assets/report.png', 'Laporan Pemasukan', false, false),
+      _container(
+          imagePath: 'assets/report.png',
+          text: 'Laporan Pemasukan',
+          isMoreWidget: false,
+          isWidgetCenter: false),
       const SizedBox(height: 8.0),
-      _container('assets/report.png', 'Laporan Pengeluaran', false, false),
+      _container(
+          imagePath: 'assets/report.png',
+          text: 'Laporan Pengeluaran',
+          isMoreWidget: false,
+          isWidgetCenter: false,
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const LaporanPengeluaranPage()));
+          }),
       const SizedBox(height: 50.0),
-      _container('assets/pdf.png', 'Laporan Pengeluaran', false, true),
+      _container(
+          imagePath: 'assets/pdf.png',
+          text: 'Laporan Pengeluaran',
+          isMoreWidget: false,
+          isWidgetCenter: true),
       SizedBox(height: MediaQuery.of(context).size.height * 0.3),
       Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -27,9 +52,9 @@ class LaporanPage extends StatelessWidget {
             height: 40.0,
             width: 170.0,
             child: CustomButton(
+              color: AppColors.secondaryColor,
               widget: const Text(
                 "Simpan",
-                style: TextStyle(color: Colors.black),
               ),
               onPressed: () {},
               enableBorderSide: false,
@@ -41,6 +66,7 @@ class LaporanPage extends StatelessWidget {
             height: 40.0,
             width: 150.0,
             child: CustomButton(
+              color: AppColors.secondaryColor,
               widget: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -48,7 +74,6 @@ class LaporanPage extends StatelessWidget {
                   const SizedBox(width: 8.0),
                   const Text(
                     'Bagikan',
-                    style: TextStyle(color: Colors.black),
                   ),
                 ],
               ),
@@ -68,31 +93,40 @@ class LaporanPage extends StatelessWidget {
   //     backgroundColor: AppColors.primaryColor,
   //   );
   // }
-
+// [BuildContext? context, VoidCallback? onTap]
   //smaller widgets
-  Widget _container(
-      String imagePath, String text, bool isMoreWidget, bool isWidgetCenter,
-      [BuildContext? context]) {
-    return Container(
-      padding: const EdgeInsets.all(8.0),
-      color: Colors.grey[300],
-      child: Row(
-        mainAxisAlignment:
-            isWidgetCenter ? MainAxisAlignment.center : MainAxisAlignment.start,
-        children: [
-          Image.asset(imagePath),
-          Text(text),
-          const SizedBox(width: 4.0),
-          isWidgetCenter ? Container() : const Spacer(),
-          isMoreWidget
-              ? GestureDetector(
-                  child: const Text('Ubah'),
-                  onTap: () {
-                    _showBotomSheet(context!);
-                  },
-                )
-              : Container(),
-        ],
+  Widget _container({
+    required String imagePath,
+    required String text,
+    required bool isMoreWidget,
+    required bool isWidgetCenter,
+    BuildContext? context,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        color: Colors.grey[300],
+        child: Row(
+          mainAxisAlignment: isWidgetCenter
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          children: [
+            Image.asset(imagePath),
+            Text(text),
+            const SizedBox(width: 4.0),
+            isWidgetCenter ? Container() : const Spacer(),
+            isMoreWidget
+                ? GestureDetector(
+                    child: const Text('Ubah'),
+                    onTap: () {
+                      _showBotomSheet(context!);
+                    },
+                  )
+                : Container(),
+          ],
+        ),
       ),
     );
   }
