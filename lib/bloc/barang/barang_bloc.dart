@@ -12,6 +12,7 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
     on<GetBarangEvent>(getBarang);
     on<TambahKuantitasEvent>(tambahKuantitas);
     on<KurangiKuantitasEvent>(kurangiKuantitas);
+    on<ResetStokEvent>(resetStok);
   }
   void getBarang(GetBarangEvent event, Emitter emit) async {
     emit(BarangLoading());
@@ -54,6 +55,20 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
           else
             barang
       ];
+
+      emit(BarangLoaded(barang: updatedBarang));
+    }
+  }
+
+  void resetStok(ResetStokEvent event, Emitter emit) {
+    final currentState = state;
+
+    if (currentState is BarangLoaded) {
+      List<DataBarang> updatedBarang = currentState.barang
+          .map((e) => e.kuantitas! > e.stokBarang
+              ? e.copyWith(stokBarang: e.stokBarang)
+              : e.copyWith(stokBarang: e.stokBarang - (e.kuantitas ?? 0)))
+          .toList();
 
       emit(BarangLoaded(barang: updatedBarang));
     }

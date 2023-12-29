@@ -103,11 +103,12 @@ class TransaksiPage extends StatelessWidget {
                           style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
-                          print(state.filters
-                              .where((element) => element.isActive)
-                              .first
-                              .nama
-                              .toString());
+                          // print(state.filters
+                          //     .where((element) => element.isActive)
+                          //     .first
+                          //     .nama
+                          //     .toString());
+                          context.read<BarangBloc>().add(ResetStokEvent());
                         },
                         radiusValue: 30.0,
                         enableBorderSide: false,

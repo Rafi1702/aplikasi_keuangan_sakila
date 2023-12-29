@@ -35,3 +35,5 @@ class KurangiKuantitasEvent extends BarangEvent {
   @override
   List<Object> get props => [id];
 }
+
+class ResetStokEvent extends BarangEvent {}
