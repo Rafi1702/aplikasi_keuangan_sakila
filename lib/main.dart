@@ -6,7 +6,7 @@ import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/view/home_page.dart';
 import 'package:sakila_store_project/view/login_page.dart';
 import 'package:sakila_store_project/view/splash_screen.dart';
-import 'package:sakila_store_project/view/transaksi_page.dart';
+import 'package:sakila_store_project/view/transaksi_baru_page.dart';
 
 void main() {
   runApp(const MyApp());

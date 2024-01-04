@@ -40,7 +40,8 @@ dependencies:
   dropdown_button2: ^2.3.9
   equatable: ^2.0.5
   shared_preferences: ^2.2.2
-  http_interceptor: 
+  http_interceptor:
+  intl: 
 
 dev_dependencies:
   flutter_test:

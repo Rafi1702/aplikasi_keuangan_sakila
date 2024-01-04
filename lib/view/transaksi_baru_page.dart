@@ -6,8 +6,8 @@ import 'package:sakila_store_project/model/barang_model.dart';
 import 'package:sakila_store_project/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 
-class TransaksiPage extends StatelessWidget {
-  const TransaksiPage({super.key});
+class TransaksiBaruPage extends StatelessWidget {
+  const TransaksiBaruPage({super.key});
 
   // final FilterBloc filter = FilterBloc();
   @override

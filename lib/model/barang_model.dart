@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:sakila_store_project/model/detail_pengeluaran_model.dart';
+
 Barang barangFromJson(String str) => Barang.fromJson(json.decode(str));
 
 String barangToJson(Barang data) => json.encode(data.toJson());
@@ -38,6 +40,7 @@ class DataBarang {
   String jenisBarang;
   int stokBarang;
   int hargaBarang;
+  DetailPengeluaran? detailPengeluaran;
   int? kuantitas;
 
   DataBarang({
@@ -46,6 +49,7 @@ class DataBarang {
     required this.jenisBarang,
     required this.stokBarang,
     required this.hargaBarang,
+    this.detailPengeluaran,
     this.kuantitas = 0,
   });
 
@@ -55,6 +59,7 @@ class DataBarang {
     String? jenisBarang,
     int? stokBarang,
     int? hargaBarang,
+    DetailPengeluaran? detailPengeluaran,
     int? kuantitas,
   }) =>
       DataBarang(
@@ -63,6 +68,7 @@ class DataBarang {
         jenisBarang: jenisBarang ?? this.jenisBarang,
         stokBarang: stokBarang ?? this.stokBarang,
         hargaBarang: hargaBarang ?? this.hargaBarang,
+        detailPengeluaran: detailPengeluaran ?? this.detailPengeluaran,
         kuantitas: kuantitas ?? this.kuantitas,
       );
 

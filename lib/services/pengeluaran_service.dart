@@ -8,8 +8,9 @@ import 'package:sakila_store_project/network/global_interceptor.dart';
 
 class PengeluaranService {
   Future<Pengeluaran> getPengeluaran() async {
+    print(HttpClient.API_KEY);
     final response = await HttpClient.client
-        .get(Uri.parse('http://10.0.2.2:3001/api/laporan'));
+        .get(Uri.parse('${HttpClient.API_KEY}/pengeluaran'));
     print(response.body);
 
     return Pengeluaran.fromJson(jsonDecode(response.body));

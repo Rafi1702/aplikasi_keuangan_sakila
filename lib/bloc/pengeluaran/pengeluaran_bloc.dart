@@ -17,6 +17,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
   ) async {
     try {
       Pengeluaran pengeluaran = await PengeluaranService().getPengeluaran();
+      print(pengeluaran.data);
       emit(PengeluaranLoaded(pengeluaran: pengeluaran.data));
     } catch (e) {
       emit(PengeluaranError(error: e.toString()));
