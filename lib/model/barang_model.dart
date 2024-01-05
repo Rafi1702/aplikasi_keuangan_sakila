@@ -6,25 +6,26 @@ import 'dart:convert';
 
 import 'package:sakila_store_project/model/detail_pengeluaran_model.dart';
 
-Barang barangFromJson(String str) => Barang.fromJson(json.decode(str));
+BarangModel barangFromJson(String str) =>
+    BarangModel.fromJson(json.decode(str));
 
 String barangToJson(Barang data) => json.encode(data.toJson());
 
-class Barang {
+class BarangModel {
   List<DataBarang> data;
 
-  Barang({
+  BarangModel({
     required this.data,
   });
 
-  Barang copyWith({
+  BarangModel copyWith({
     List<DataBarang>? data,
   }) =>
-      Barang(
+      BarangModel(
         data: data ?? this.data,
       );
 
-  factory Barang.fromJson(Map<String, dynamic> json) => Barang(
+  factory BarangModel.fromJson(Map<String, dynamic> json) => BarangModel(
         data: List<DataBarang>.from(
             json["data"].map((x) => DataBarang.fromJson(x))),
       );
@@ -82,9 +83,10 @@ class DataBarang {
 
   Map<String, dynamic> toJson() => {
         "id_barang": idBarang,
-        "nama_barang": namaBarang,
-        "jenis_barang": jenisBarang,
-        "stok_barang": stokBarang,
-        "harga_barang": hargaBarang,
+        // "nama_barang": namaBarang,
+        // "jenis_barang": jenisBarang,
+        // "stok_barang": stokBarang,
+        // "harga_barang": hargaBarang,
+        "kuantitas": kuantitas,
       };
 }

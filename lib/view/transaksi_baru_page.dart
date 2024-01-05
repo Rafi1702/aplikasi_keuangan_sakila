@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/bloc/filter/filter_bloc.dart';
+import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
+import 'package:sakila_store_project/services/pengeluaran_service.dart';
 import 'package:sakila_store_project/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 
@@ -64,16 +66,86 @@ class TransaksiBaruPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 24.0),
-                  BlocBuilder<BarangBloc, BarangState>(
-                    builder: (context, state) {
-                      if (state is BarangLoading) {
-                        return const CircularProgressIndicator();
+                  BlocListener<PengeluaranBloc, PengeluaranState>(
+                    listener: (context, state) {
+                      if (state is PengeluaranLoading) {
+                        showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            });
                       }
-                      if (state is BarangLoaded) {
-                        return _listBarang(state.barang);
+                      if (state is PengeluaranError) {
+                        showDialog<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                  content: Text(state.error),
+                                  actions: [
+                                    ElevatedButton(
+                                      child: const Text('Pop'),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    )
+                                  ]);
+                            });
                       }
-                      return Container();
+                      // TODO: implement listener
                     },
+                    child: BlocBuilder<BarangBloc, BarangState>(
+                      builder: (context, state) {
+                        if (state is BarangLoading) {
+                          return const CircularProgressIndicator();
+                        }
+                        if (state is BarangLoaded) {
+                          return Column(
+                            children: [
+                              _listBarang(state.barang),
+                              Center(
+                                child: SizedBox(
+                                  width: 240.0,
+                                  child: CustomButton(
+                                    color: AppColors.secondaryColor,
+                                    widget: const Text(
+                                      "Simpan Transaksi",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                    onPressed: () async {
+                                      // List<DataBarang> filteredBarang = state
+                                      //     .barang
+                                      //     .where((e) => e.kuantitas! > 0)
+                                      //     .toList();
+                                      // print(state.filters
+                                      //     .where((element) => element.isActive)
+                                      //     .first
+                                      //     .nama
+                                      //     .toString());
+
+                                      context.read<PengeluaranBloc>().add(
+                                          InsertPengeluaranEvent(
+                                              barang: state.barang,
+                                              tanggalPengeluaran:
+                                                  "2024-01-31"));
+                                      // await PengeluaranService()
+                                      //     .insertPengeluaran(
+                                      //         "2024-01-30", filteredBarang);
+                                      // context
+                                      //     .read<BarangBloc>()
+                                      //     .add(ResetStokEvent());
+                                    },
+                                    radiusValue: 30.0,
+                                    enableBorderSide: false,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Container();
+                      },
+                    ),
                   ),
                   const SizedBox(height: 16.0),
                   Container(
@@ -92,28 +164,6 @@ class TransaksiBaruPage extends StatelessWidget {
                   ),
                   const SizedBox(
                     height: 30.0,
-                  ),
-                  Center(
-                    child: SizedBox(
-                      width: 240.0,
-                      child: CustomButton(
-                        color: AppColors.secondaryColor,
-                        widget: const Text(
-                          "Simpan Transaksi",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        onPressed: () {
-                          // print(state.filters
-                          //     .where((element) => element.isActive)
-                          //     .first
-                          //     .nama
-                          //     .toString());
-                          context.read<BarangBloc>().add(ResetStokEvent());
-                        },
-                        radiusValue: 30.0,
-                        enableBorderSide: false,
-                      ),
-                    ),
                   ),
                 ],
               );

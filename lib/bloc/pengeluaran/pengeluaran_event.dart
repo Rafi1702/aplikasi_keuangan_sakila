@@ -8,3 +8,14 @@ sealed class PengeluaranEvent extends Equatable {
 }
 
 class GetAllPengeluaranEvent extends PengeluaranEvent {}
+
+class InsertPengeluaranEvent extends PengeluaranEvent {
+  final String tanggalPengeluaran;
+  final List<DataBarang> barang;
+
+  const InsertPengeluaranEvent(
+      {required this.barang, required this.tanggalPengeluaran});
+
+  @override
+  List<Object> get props => [tanggalPengeluaran, barang];
+}

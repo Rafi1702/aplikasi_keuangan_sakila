@@ -10,7 +10,7 @@ sealed class PengeluaranState extends Equatable {
 final class PengeluaranLoading extends PengeluaranState {}
 
 final class PengeluaranLoaded extends PengeluaranState {
-  final List<Data> pengeluaran;
+  final List<DataPengeluaran> pengeluaran;
   const PengeluaranLoaded({required this.pengeluaran});
 
   @override

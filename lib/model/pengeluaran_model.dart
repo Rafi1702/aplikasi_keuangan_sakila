@@ -10,21 +10,22 @@ Pengeluaran pengeluaranFromJson(String str) =>
 String pengeluaranToJson(Pengeluaran data) => json.encode(data.toJson());
 
 class Pengeluaran {
-  List<Data> data;
+  List<DataPengeluaran> data;
 
   Pengeluaran({
     required this.data,
   });
 
   Pengeluaran copyWith({
-    List<Data>? data,
+    List<DataPengeluaran>? data,
   }) =>
       Pengeluaran(
         data: data ?? this.data,
       );
 
   factory Pengeluaran.fromJson(Map<String, dynamic> json) => Pengeluaran(
-        data: List<Data>.from(json["data"].map((x) => Data.fromJson(x))),
+        data: List<DataPengeluaran>.from(
+            json["data"].map((x) => DataPengeluaran.fromJson(x))),
       );
 
   Map<String, dynamic> toJson() => {
@@ -32,31 +33,33 @@ class Pengeluaran {
       };
 }
 
-class Data {
+class DataPengeluaran {
   int idPengeluaran;
   DateTime tanggalPengeluaran;
 
-  Data({
+  DataPengeluaran({
     required this.idPengeluaran,
     required this.tanggalPengeluaran,
   });
 
-  Data copyWith({
+  DataPengeluaran copyWith({
     int? idPengeluaran,
     DateTime? tanggalPengeluaran,
   }) =>
-      Data(
+      DataPengeluaran(
         idPengeluaran: idPengeluaran ?? this.idPengeluaran,
         tanggalPengeluaran: tanggalPengeluaran ?? this.tanggalPengeluaran,
       );
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory DataPengeluaran.fromJson(Map<String, dynamic> json) =>
+      DataPengeluaran(
         idPengeluaran: json["id_pengeluaran"],
         tanggalPengeluaran: DateTime.parse(json["tanggal_pengeluaran"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id_pengeluaran": idPengeluaran,
-        "tanggal_pengeluaran": tanggalPengeluaran.toIso8601String(),
+        "tanggal_pengeluaran":
+            "${tanggalPengeluaran.year.toString().padLeft(4, '0')}-${tanggalPengeluaran.month.toString().padLeft(2, '0')}-${tanggalPengeluaran.day.toString().padLeft(2, '0')}",
       };
 }
