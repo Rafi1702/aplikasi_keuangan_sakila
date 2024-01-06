@@ -17,7 +17,7 @@ class TransaksiBaruPage extends StatefulWidget {
 }
 
 class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
-  final GlobalKey<State> _keyLoader = GlobalKey<State>();
+  final LoadingOverlay _loadingOverlay = LoadingOverlay();
   // final FilterBloc filter = FilterBloc();
   @override
   Widget build(BuildContext context) {
@@ -36,37 +36,48 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
         vertical: 24.0,
       ),
       child: BlocListener<PengeluaranBloc, PengeluaranState>(
+        listenWhen: (previous, current) {
+          if (current.pengeluaran.isEmpty) {
+            return false;
+          }
+
+          return true;
+        },
         listener: (context, state) {
           if (state.status == PengeluaranStatus.loading) {
-            Dialogs.showLoadingDialog(context, _keyLoader);
+            _loadingOverlay.show(context);
           }
           if (state.status == PengeluaranStatus.loaded) {
-            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+            _loadingOverlay.hide();
           }
           if (state.status == PengeluaranStatus.error) {
-            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
-            Dialogs.showErrorDialog(context, _keyLoader, state.errorMessage);
+            _loadingOverlay.hide();
+            showDialog<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                      content: Text(state.errorMessage),
+                      actions: [
+                        ElevatedButton(
+                          child: const Text('Pop'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        )
+                      ]);
+                });
           }
         },
         child: BlocBuilder<BarangBloc, BarangState>(
           builder: (context, state) {
-            if (state is BarangLoading) {
+            if (state.status == BarangStatus.loading) {
               return const CircularProgressIndicator();
             }
-            if (state is BarangLoaded) {
+            if (state.status == BarangStatus.loaded) {
               return Column(
                 children: [
-                  BlocProvider(
-                    create: (context) => FilterBloc()..add(GetFilterEvent()),
-                    child: BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                        if (state is FilterLoaded) {
-                          return _filterContainer(state);
-                        }
-                        return Container();
-                      },
-                    ),
-                  ),
+                  _filterContainer(),
+                  const SizedBox(height: 10.0),
                   _listBarang(state),
                   const SizedBox(height: 16.0),
                   _calendarBox(),
@@ -77,6 +88,9 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
                 ],
               );
             }
+            if (state.status == BarangStatus.error) {
+              return Center(child: Text(state.errorMessage));
+            }
             return Container();
           },
         ),
@@ -84,7 +98,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
     );
   }
 
-  Widget _roundedButton(BuildContext context, BarangLoaded state) {
+  Widget _roundedButton(BuildContext context, BarangState state) {
     return SizedBox(
       width: 240.0,
       child: CustomButton(
@@ -120,36 +134,48 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
     );
   }
 
-  Widget _filterContainer(FilterLoaded state) {
-    return SizedBox(
-      height: 100.0,
-      child: ListView.builder(
-        clipBehavior: Clip.hardEdge,
-        physics: const NeverScrollableScrollPhysics(),
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        itemCount: state.filters.length,
-        itemBuilder: (context, index) {
-          return GestureDetector(
-            onTap: () {
-              context.read<FilterBloc>().add(
-                    ChangeFilterEvent(
-                      filter: state.filters[index],
+  Widget _filterContainer() {
+    return BlocProvider(
+      create: (context) => FilterBloc()..add(GetFilterEvent()),
+      child: BlocBuilder<FilterBloc, FilterState>(
+        builder: (context, state) {
+          if (state is FilterLoaded) {
+            return SizedBox(
+              height: 100.0,
+              child: ListView.builder(
+                clipBehavior: Clip.hardEdge,
+                physics: const NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.horizontal,
+                shrinkWrap: true,
+                itemCount: state.filters.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<FilterBloc>().add(
+                            ChangeFilterEvent(
+                              filter: state.filters[index],
+                            ),
+                          );
+                    },
+                    child: Container(
+                      color: state.filters[index].isActive
+                          ? Colors.red
+                          : Colors.white,
+                      width: MediaQuery.of(context).size.width * 0.42,
+                      child: Center(child: Text(state.filters[index].nama)),
                     ),
                   );
-            },
-            child: Container(
-              color: state.filters[index].isActive ? Colors.red : Colors.white,
-              width: MediaQuery.of(context).size.width * 0.42,
-              child: Center(child: Text(state.filters[index].nama)),
-            ),
-          );
+                },
+              ),
+            );
+          }
+          return Container();
         },
       ),
     );
   }
 
-  Widget _listBarang(BarangLoaded state) {
+  Widget _listBarang(BarangState state) {
     return SizedBox(
       child: state.barang.isEmpty
           ? const Center(

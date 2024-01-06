@@ -6,9 +6,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/view/home_page.dart';
-import 'package:sakila_store_project/view/login_page.dart';
-import 'package:sakila_store_project/view/splash_screen.dart';
-import 'package:sakila_store_project/view/transaksi_baru_page.dart';
 
 void main() async {
   await initializeDateFormatting('id_ID', null);
@@ -30,10 +27,16 @@ class _MyAppState extends State<MyApp> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => _barangBloc..add(GetBarangEvent()),
+          create: (context) => _barangBloc
+            ..add(
+              GetBarangEvent(),
+            ),
         ),
         BlocProvider(
-          create: (context) => _pengeluaranBloc..add(GetAllPengeluaranEvent()),
+          create: (context) => _pengeluaranBloc
+            ..add(
+              GetAllPengeluaranEvent(),
+            ),
         ),
       ],
       child: MaterialApp(

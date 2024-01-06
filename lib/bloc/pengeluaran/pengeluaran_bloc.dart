@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
 import 'package:sakila_store_project/model/pengeluaran_model.dart';
-import 'package:sakila_store_project/services/exception.dart';
+
 import 'package:sakila_store_project/services/pengeluaran_service.dart';
 
 part 'pengeluaran_event.dart';
@@ -36,7 +36,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
   void insertPengeluaran(InsertPengeluaranEvent event, Emitter emit) async {
     // List<DataPengeluaran> currentData = currentState.pengeluaran;
     emit(state.copyWith(status: PengeluaranStatus.loading));
-
+    await Future.delayed(const Duration(seconds: 3));
     try {
       List<DataBarang> filteredBarang =
           event.barang.where((e) => e.kuantitas! > 0).toList();

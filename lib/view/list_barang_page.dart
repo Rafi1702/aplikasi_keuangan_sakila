@@ -25,10 +25,10 @@ class _ListBarangPageState extends State<ListBarangPage> {
   Widget _buildBody(BuildContext context) {
     return BlocBuilder<BarangBloc, BarangState>(
       builder: (context, state) {
-        if (state is BarangLoading) {
+        if (state.status == BarangStatus.loading) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (state is BarangLoaded) {
+        if (state.status == BarangStatus.loaded) {
           return GridView.builder(
             clipBehavior: Clip.none,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -80,6 +80,9 @@ class _ListBarangPageState extends State<ListBarangPage> {
               );
             },
           );
+        }
+        if (state.status == BarangStatus.error) {
+          return Center(child: Text(state.errorMessage));
         }
         return Container();
       },
