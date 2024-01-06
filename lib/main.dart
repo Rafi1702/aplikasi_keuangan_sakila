@@ -56,9 +56,9 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  @override
-  void dispose() {
-    _barangBloc.close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _barangBloc.close();
+  //   super.dispose();
+  // }
 }

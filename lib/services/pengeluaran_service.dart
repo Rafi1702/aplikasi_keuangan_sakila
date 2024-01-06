@@ -40,15 +40,19 @@ class PengeluaranService {
         }),
       );
 
+      final errMessage = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 409) {
+        throw CustomException(errMessage);
+      }
+
       if (response.statusCode == 400) {
-        throw CustomException(jsonDecode(response.body)['message']);
+        throw CustomException(errMessage);
       }
 
       return DataPengeluaran.fromJson(jsonDecode(response.body)['data']);
     } on SocketException {
       throw CustomException("Cek Koneksi Internet Anda");
-    } on Exception {
-      throw CustomException("Test");
     }
   }
 }

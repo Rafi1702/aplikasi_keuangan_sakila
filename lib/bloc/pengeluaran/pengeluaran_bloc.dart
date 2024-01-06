@@ -1,15 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
 import 'package:sakila_store_project/model/pengeluaran_model.dart';
 import 'package:sakila_store_project/services/exception.dart';
 import 'package:sakila_store_project/services/pengeluaran_service.dart';
 
 part 'pengeluaran_event.dart';
-part 'pengeluaran_state.dart';
+// part 'pengeluaran_state.dart';
 
 class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
-  PengeluaranBloc() : super(PengeluaranLoading()) {
+  PengeluaranBloc()
+      : super(const PengeluaranState(status: PengeluaranStatus.initial)) {
     on<GetAllPengeluaranEvent>(getAllPengeluaran);
     on<InsertPengeluaranEvent>(insertPengeluaran);
   }
@@ -18,29 +20,35 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
     GetAllPengeluaranEvent pengeluaran,
     Emitter emit,
   ) async {
+    emit(state.copyWith(status: PengeluaranStatus.loading));
+
     try {
       Pengeluaran pengeluaran = await PengeluaranService().getPengeluaran();
 
-      emit(PengeluaranLoaded(pengeluaran: pengeluaran.data));
+      emit(state.copyWith(
+          status: PengeluaranStatus.loaded, pengeluaran: pengeluaran.data));
     } catch (e) {
-      emit(PengeluaranError(error: e.toString()));
+      emit(state.copyWith(
+          status: PengeluaranStatus.error, errorMessage: e.toString()));
     }
   }
 
   void insertPengeluaran(InsertPengeluaranEvent event, Emitter emit) async {
-    try {
-      final currentState = state;
-      if (currentState is PengeluaranLoaded) {
-        List<DataBarang> filteredBarang =
-            event.barang.where((e) => e.kuantitas! > 0).toList();
-        DataPengeluaran data = await PengeluaranService()
-            .insertPengeluaran(event.tanggalPengeluaran, filteredBarang);
-        List<DataPengeluaran> updatedData = [...currentState.pengeluaran, data];
+    // List<DataPengeluaran> currentData = currentState.pengeluaran;
+    emit(state.copyWith(status: PengeluaranStatus.loading));
 
-        emit(PengeluaranLoaded(pengeluaran: updatedData));
-      }
+    try {
+      List<DataBarang> filteredBarang =
+          event.barang.where((e) => e.kuantitas! > 0).toList();
+      DataPengeluaran data = await PengeluaranService()
+          .insertPengeluaran(event.tanggalPengeluaran, filteredBarang);
+      List<DataPengeluaran> updatedData = [...state.pengeluaran, data];
+
+      emit(state.copyWith(
+          status: PengeluaranStatus.loaded, pengeluaran: updatedData));
     } catch (e) {
-      emit(PengeluaranError(error: e.toString()));
+      emit(state.copyWith(
+          status: PengeluaranStatus.error, errorMessage: e.toString()));
     }
   }
 }

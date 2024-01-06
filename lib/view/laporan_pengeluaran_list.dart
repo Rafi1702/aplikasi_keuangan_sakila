@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
+import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 import 'package:sakila_store_project/services/pengeluaran_service.dart';
 import 'package:sakila_store_project/view/detail_pengeluaran_page.dart';
 
@@ -15,12 +16,13 @@ class LaporanPengeluaranPage extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<PengeluaranBloc, PengeluaranState>(
           builder: (context, state) {
-            if (state is PengeluaranLoading) {
+            if (state.status == PengeluaranStatus.loading) {
               const Center(
                 child: CircularProgressIndicator(),
               );
             }
-            if (state is PengeluaranLoaded) {
+            if (state.status == PengeluaranStatus.loaded ||
+                state.status == PengeluaranStatus.error) {
               return Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,

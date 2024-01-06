@@ -3,14 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/bloc/filter/filter_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
-import 'package:sakila_store_project/model/barang_model.dart';
-import 'package:sakila_store_project/services/pengeluaran_service.dart';
+import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
+
 import 'package:sakila_store_project/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
+import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
-class TransaksiBaruPage extends StatelessWidget {
+class TransaksiBaruPage extends StatefulWidget {
   const TransaksiBaruPage({super.key});
 
+  @override
+  State<TransaksiBaruPage> createState() => _TransaksiBaruPageState();
+}
+
+class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
+  final GlobalKey<State> _keyLoader = GlobalKey<State>();
   // final FilterBloc filter = FilterBloc();
   @override
   Widget build(BuildContext context) {
@@ -28,143 +35,45 @@ class TransaksiBaruPage extends StatelessWidget {
         horizontal: 32.0,
         vertical: 24.0,
       ),
-      child: BlocProvider(
-        create: (context) => FilterBloc()..add(GetFilterEvent()),
-        child: BlocBuilder<FilterBloc, FilterState>(
+      child: BlocListener<PengeluaranBloc, PengeluaranState>(
+        listener: (context, state) {
+          if (state.status == PengeluaranStatus.loading) {
+            Dialogs.showLoadingDialog(context, _keyLoader);
+          }
+          if (state.status == PengeluaranStatus.loaded) {
+            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+          }
+          if (state.status == PengeluaranStatus.error) {
+            Navigator.of(_keyLoader.currentContext!, rootNavigator: true).pop();
+            Dialogs.showErrorDialog(context, _keyLoader, state.errorMessage);
+          }
+        },
+        child: BlocBuilder<BarangBloc, BarangState>(
           builder: (context, state) {
-            if (state is FilterLoaded) {
+            if (state is BarangLoading) {
+              return const CircularProgressIndicator();
+            }
+            if (state is BarangLoaded) {
               return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 100.0,
-                    child: ListView.builder(
-                      clipBehavior: Clip.hardEdge,
-                      physics: const NeverScrollableScrollPhysics(),
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: state.filters.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            context.read<FilterBloc>().add(
-                                  ChangeFilterEvent(
-                                    filter: state.filters[index],
-                                  ),
-                                );
-                          },
-                          child: Container(
-                            color: state.filters[index].isActive
-                                ? Colors.red
-                                : Colors.white,
-                            width: MediaQuery.of(context).size.width * 0.42,
-                            child:
-                                Center(child: Text(state.filters[index].nama)),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24.0),
-                  BlocListener<PengeluaranBloc, PengeluaranState>(
-                    listener: (context, state) {
-                      if (state is PengeluaranLoading) {
-                        showDialog<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return const Center(
-                                  child: CircularProgressIndicator());
-                            });
-                      }
-                      if (state is PengeluaranError) {
-                        showDialog<void>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                  content: Text(state.error),
-                                  actions: [
-                                    ElevatedButton(
-                                      child: const Text('Pop'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    )
-                                  ]);
-                            });
-                      }
-                      // TODO: implement listener
-                    },
-                    child: BlocBuilder<BarangBloc, BarangState>(
+                  BlocProvider(
+                    create: (context) => FilterBloc()..add(GetFilterEvent()),
+                    child: BlocBuilder<FilterBloc, FilterState>(
                       builder: (context, state) {
-                        if (state is BarangLoading) {
-                          return const CircularProgressIndicator();
-                        }
-                        if (state is BarangLoaded) {
-                          return Column(
-                            children: [
-                              _listBarang(state.barang),
-                              Center(
-                                child: SizedBox(
-                                  width: 240.0,
-                                  child: CustomButton(
-                                    color: AppColors.secondaryColor,
-                                    widget: const Text(
-                                      "Simpan Transaksi",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
-                                    onPressed: () async {
-                                      // List<DataBarang> filteredBarang = state
-                                      //     .barang
-                                      //     .where((e) => e.kuantitas! > 0)
-                                      //     .toList();
-                                      // print(state.filters
-                                      //     .where((element) => element.isActive)
-                                      //     .first
-                                      //     .nama
-                                      //     .toString());
-
-                                      context.read<PengeluaranBloc>().add(
-                                          InsertPengeluaranEvent(
-                                              barang: state.barang,
-                                              tanggalPengeluaran:
-                                                  "2024-01-31"));
-                                      // await PengeluaranService()
-                                      //     .insertPengeluaran(
-                                      //         "2024-01-30", filteredBarang);
-                                      // context
-                                      //     .read<BarangBloc>()
-                                      //     .add(ResetStokEvent());
-                                    },
-                                    radiusValue: 30.0,
-                                    enableBorderSide: false,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
+                        if (state is FilterLoaded) {
+                          return _filterContainer(state);
                         }
                         return Container();
                       },
                     ),
                   ),
+                  _listBarang(state),
                   const SizedBox(height: 16.0),
-                  Container(
-                    width: 180.0,
-                    height: 40.0,
-                    padding: const EdgeInsets.only(left: 8.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6.0),
-                      border: Border.all(width: 1, color: Colors.grey),
-                    ),
-                    child: Row(children: [
-                      Image.asset('assets/calendar.png'),
-                      const SizedBox(width: 4.0),
-                      const Text("Pilih Tanggal"),
-                    ]),
-                  ),
+                  _calendarBox(),
                   const SizedBox(
                     height: 30.0,
                   ),
+                  _roundedButton(context, state),
                 ],
               );
             }
@@ -175,9 +84,74 @@ class TransaksiBaruPage extends StatelessWidget {
     );
   }
 
-  Widget _listBarang(List<DataBarang> barang) {
+  Widget _roundedButton(BuildContext context, BarangLoaded state) {
     return SizedBox(
-      child: barang.isEmpty
+      width: 240.0,
+      child: CustomButton(
+        color: AppColors.secondaryColor,
+        widget: const Text(
+          "Simpan Transaksi",
+          style: TextStyle(color: Colors.black),
+        ),
+        onPressed: () async {
+          context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
+              barang: state.barang, tanggalPengeluaran: "2024-01-06"));
+        },
+        radiusValue: 30.0,
+        enableBorderSide: false,
+      ),
+    );
+  }
+
+  Widget _calendarBox() {
+    return Container(
+      width: 180.0,
+      height: 40.0,
+      padding: const EdgeInsets.only(left: 8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0),
+        border: Border.all(width: 1, color: Colors.grey),
+      ),
+      child: Row(children: [
+        Image.asset('assets/calendar.png'),
+        const SizedBox(width: 4.0),
+        const Text("Pilih Tanggal"),
+      ]),
+    );
+  }
+
+  Widget _filterContainer(FilterLoaded state) {
+    return SizedBox(
+      height: 100.0,
+      child: ListView.builder(
+        clipBehavior: Clip.hardEdge,
+        physics: const NeverScrollableScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemCount: state.filters.length,
+        itemBuilder: (context, index) {
+          return GestureDetector(
+            onTap: () {
+              context.read<FilterBloc>().add(
+                    ChangeFilterEvent(
+                      filter: state.filters[index],
+                    ),
+                  );
+            },
+            child: Container(
+              color: state.filters[index].isActive ? Colors.red : Colors.white,
+              width: MediaQuery.of(context).size.width * 0.42,
+              child: Center(child: Text(state.filters[index].nama)),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _listBarang(BarangLoaded state) {
+    return SizedBox(
+      child: state.barang.isEmpty
           ? const Center(
               child: Text(
                 'List Kosong',
@@ -193,7 +167,7 @@ class TransaksiBaruPage extends StatelessWidget {
                 crossAxisSpacing: 20.0, // spacing between columns
                 mainAxisExtent: 200.0, // height of container
               ),
-              itemCount: barang.length,
+              itemCount: state.barang.length,
               itemBuilder: (context, index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -222,11 +196,11 @@ class TransaksiBaruPage extends StatelessWidget {
                       const SizedBox(
                         height: 8.0,
                       ),
-                      Text(barang[index].namaBarang),
+                      Text(state.barang[index].namaBarang),
                       const SizedBox(
                         height: 4.0,
                       ),
-                      Text("Rp. ${barang[index].hargaBarang}"),
+                      Text("Rp. ${state.barang[index].hargaBarang}"),
                       const SizedBox(
                         height: 8.0,
                       ),
@@ -237,16 +211,16 @@ class TransaksiBaruPage extends StatelessWidget {
                             onTap: () {
                               context.read<BarangBloc>().add(
                                   KurangiKuantitasEvent(
-                                      id: barang[index].idBarang));
+                                      id: state.barang[index].idBarang));
                             },
                             child: const Icon(Icons.remove, size: 20.0),
                           ),
-                          Text(barang[index].kuantitas.toString()),
+                          Text(state.barang[index].kuantitas.toString()),
                           GestureDetector(
                             onTap: () {
                               context.read<BarangBloc>().add(
                                   TambahKuantitasEvent(
-                                      id: barang[index].idBarang));
+                                      id: state.barang[index].idBarang));
                             },
                             child: const Icon(Icons.add, size: 20.0),
                           ),
