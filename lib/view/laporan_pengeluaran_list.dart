@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
-import 'package:sakila_store_project/services/pengeluaran_service.dart';
+
 import 'package:sakila_store_project/view/detail_pengeluaran_page.dart';
 
 class LaporanPengeluaranPage extends StatelessWidget {

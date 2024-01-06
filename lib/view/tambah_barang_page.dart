@@ -62,6 +62,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
                     setState(() {
                       _selectedValue = val;
                     });
+                    print(_selectedValue);
                   },
                 ),
               ),
