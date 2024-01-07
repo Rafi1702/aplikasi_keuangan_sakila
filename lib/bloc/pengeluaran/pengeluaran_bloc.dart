@@ -20,22 +20,28 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
     GetAllPengeluaranEvent pengeluaran,
     Emitter emit,
   ) async {
-    emit(state.copyWith(status: PengeluaranStatus.loading));
+    emit(state.copyWith(status: PengeluaranStatus.loading, isGetting: true));
 
     try {
       Pengeluaran pengeluaran = await PengeluaranService().getPengeluaran();
 
       emit(state.copyWith(
-          status: PengeluaranStatus.loaded, pengeluaran: pengeluaran.data));
+          status: PengeluaranStatus.loaded,
+          pengeluaran: pengeluaran.data,
+          isGetting: false));
     } catch (e) {
-      emit(state.copyWith(
-          status: PengeluaranStatus.error, errorMessage: e.toString()));
+      emit(
+        state.copyWith(
+            status: PengeluaranStatus.error,
+            errorMessage: e.toString(),
+            isGetting: false),
+      );
     }
   }
 
   void insertPengeluaran(InsertPengeluaranEvent event, Emitter emit) async {
     // List<DataPengeluaran> currentData = currentState.pengeluaran;
-    emit(state.copyWith(status: PengeluaranStatus.pending));
+    emit(state.copyWith(status: PengeluaranStatus.loading, isInserting: true));
 
     try {
       List<DataBarang> filteredBarang =
@@ -45,10 +51,14 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
       List<DataPengeluaran> updatedData = [...state.pengeluaran, data];
 
       emit(state.copyWith(
-          status: PengeluaranStatus.loaded, pengeluaran: updatedData));
+          status: PengeluaranStatus.loaded,
+          pengeluaran: updatedData,
+          isInserting: false));
     } catch (e) {
       emit(state.copyWith(
-          status: PengeluaranStatus.failure, failureMessage: e.toString()));
+          status: PengeluaranStatus.error,
+          failureMessage: e.toString(),
+          isInserting: false));
     }
   }
 }

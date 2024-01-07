@@ -8,9 +8,6 @@ enum PengeluaranStatus {
   loading,
   loaded,
   error,
-  pending,
-  failure,
-  success
 }
 
 class PengeluaranState extends Equatable {
@@ -19,11 +16,14 @@ class PengeluaranState extends Equatable {
     this.pengeluaran = const [],
     this.errorMessage = '',
     this.failureMessage = '',
+    this.isGetting = false,
+    this.isInserting = false,
+    this.isUpdating = false,
   });
 
-  // final bool isGetting;
-  // final bool isInserting;
-  // final bool isUpdating;
+  final bool isGetting;
+  final bool isInserting;
+  final bool isUpdating;
 
   final PengeluaranStatus status;
   final List<DataPengeluaran> pengeluaran;
@@ -34,14 +34,21 @@ class PengeluaranState extends Equatable {
       {PengeluaranStatus? status,
       List<DataPengeluaran>? pengeluaran,
       String? errorMessage,
-      String? failureMessage}) {
+      String? failureMessage,
+      bool? isGetting,
+      bool? isInserting,
+      bool? isUpdating}) {
     return PengeluaranState(
         status: status ?? this.status,
         pengeluaran: pengeluaran ?? this.pengeluaran,
         errorMessage: errorMessage ?? this.errorMessage,
-        failureMessage: failureMessage ?? this.failureMessage);
+        failureMessage: failureMessage ?? this.failureMessage,
+        isGetting: isGetting ?? this.isGetting,
+        isInserting: isInserting ?? this.isInserting,
+        isUpdating: isUpdating ?? this.isUpdating);
   }
 
   @override
-  List<Object> get props => [status, pengeluaran, errorMessage];
+  List<Object> get props =>
+      [status, pengeluaran, errorMessage, isGetting, isUpdating, isInserting];
 }

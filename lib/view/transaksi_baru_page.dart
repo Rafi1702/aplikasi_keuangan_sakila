@@ -37,8 +37,21 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
         vertical: 24.0,
       ),
       child: BlocListener<PengeluaranBloc, PengeluaranState>(
+        listenWhen: (previous, current) {
+          return current.isInserting || previous.isInserting;
+        },
         listener: (context, state) {
-          if (state.status == PengeluaranStatus.failure) {
+          if (state.status == PengeluaranStatus.loaded) {
+            // print(state.isGetting);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text('Berhasil Menambahkan Transaksi'),
+              action: SnackBarAction(
+                label: 'close',
+                onPressed: () {},
+              ),
+            ));
+          }
+          if (state.status == PengeluaranStatus.error) {
             showDialog<void>(
                 context: context,
                 builder: (BuildContext context) {
@@ -53,15 +66,6 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
                         )
                       ]);
                 });
-          }
-          if (state.status == PengeluaranStatus.success) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text('Berhasil Menambahkan Transaksi'),
-              action: SnackBarAction(
-                label: 'close',
-                onPressed: () {},
-              ),
-            ));
           }
         },
         child: BlocBuilder<BarangBloc, BarangState>(
@@ -110,7 +114,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
           color: state.status == PengeluaranStatus.loading
               ? Colors.grey
               : AppColors.secondaryColor,
-          widget: state.status == PengeluaranStatus.pending
+          widget: state.isInserting
               ? const CircularProgressIndicator()
               : const Text(
                   "Simpan Transaksi",
@@ -120,7 +124,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
             state.status == PengeluaranStatus.loading
                 ? null
                 : context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
-                    barang: barang, tanggalPengeluaran: "2024-01-12"));
+                    barang: barang, tanggalPengeluaran: "2024-01-18"));
           },
           radiusValue: 30.0,
           enableBorderSide: false,
