@@ -14,6 +14,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
       : super(const PengeluaranState(status: PengeluaranStatus.initial)) {
     on<GetAllPengeluaranEvent>(getAllPengeluaran);
     on<InsertPengeluaranEvent>(insertPengeluaran);
+    on<DeletePengeluaranEvent>(deletePengeluaran);
   }
 
   void getAllPengeluaran(
@@ -59,6 +60,27 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
           status: PengeluaranStatus.error,
           failureMessage: e.toString(),
           isInserting: false));
+    }
+  }
+
+  void deletePengeluaran(DeletePengeluaranEvent event, Emitter emit) async {
+    emit(state.copyWith(status: PengeluaranStatus.loading, isDeleting: true));
+    try {
+      await PengeluaranService().deletePengeluaran(event.id);
+      List<DataPengeluaran> updatedDataPengeluaran = state.pengeluaran
+          .where(
+            (element) => element.idPengeluaran != event.id,
+          )
+          .toList();
+      emit(state.copyWith(
+          status: PengeluaranStatus.loaded,
+          pengeluaran: updatedDataPengeluaran,
+          isDeleting: false));
+    } catch (e) {
+      emit(state.copyWith(
+          status: PengeluaranStatus.error,
+          failureMessage: e.toString(),
+          isDeleting: false));
     }
   }
 }

@@ -19,3 +19,11 @@ class InsertPengeluaranEvent extends PengeluaranEvent {
   @override
   List<Object> get props => [tanggalPengeluaran, barang];
 }
+
+class DeletePengeluaranEvent extends PengeluaranEvent {
+  final int id;
+  const DeletePengeluaranEvent({required this.id});
+
+  @override
+  List<Object> get props => [id];
+}

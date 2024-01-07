@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/bloc/filter/filter_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
@@ -20,6 +21,8 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
   // final LoadingOverlay _loadingOverlay = LoadingOverlay();
   List<DataBarang> barang = [];
   // final FilterBloc filter = FilterBloc();
+  DateTime? selectedDate;
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -30,6 +33,20 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
     );
   }
 
+  void setDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+        context: context,
+        initialDate: selectedDate ?? DateTime.now(),
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+
+    if (pickedDate != null && pickedDate != selectedDate) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
+  }
+
   Widget _buildBody() {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -38,6 +55,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
       ),
       child: BlocListener<PengeluaranBloc, PengeluaranState>(
         listenWhen: (previous, current) {
+          //pada saat provider terinilasisasi atau dibuat kedua nilai isInserting ini bernilai false
           return current.isInserting || previous.isInserting;
         },
         listener: (context, state) {
@@ -120,12 +138,16 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
                   "Simpan Transaksi",
                   style: TextStyle(color: Colors.black),
                 ),
-          onPressed: () {
-            state.status == PengeluaranStatus.loading
-                ? null
-                : context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
-                    barang: barang, tanggalPengeluaran: "2024-01-18"));
-          },
+          onPressed: state.status == PengeluaranStatus.loading
+              ? null
+              : () {
+                  if (selectedDate != null) {
+                    context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
+                        barang: barang,
+                        tanggalPengeluaran:
+                            DateFormat('yyy-MM-dd').format(selectedDate!)));
+                  }
+                },
           radiusValue: 30.0,
           enableBorderSide: false,
         ),
@@ -134,19 +156,28 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
   }
 
   Widget _calendarBox() {
-    return Container(
-      width: 180.0,
-      height: 40.0,
-      padding: const EdgeInsets.only(left: 8.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0),
-        border: Border.all(width: 1, color: Colors.grey),
+    return GestureDetector(
+      onTap: () {
+        setDate(context);
+      },
+      child: Container(
+        width: 180.0,
+        height: 40.0,
+        padding: const EdgeInsets.only(left: 8.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(6.0),
+          border: Border.all(width: 1, color: Colors.grey),
+        ),
+        child: Row(children: [
+          Image.asset('assets/calendar.png'),
+          const SizedBox(width: 4.0),
+          Text(
+            selectedDate == null
+                ? "Pilih Tanggal"
+                : DateFormat('yyy-MM-dd').format(selectedDate!),
+          ),
+        ]),
       ),
-      child: Row(children: [
-        Image.asset('assets/calendar.png'),
-        const SizedBox(width: 4.0),
-        const Text("Pilih Tanggal"),
-      ]),
     );
   }
 
@@ -171,8 +202,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
     );
   }
 
-  GestureDetector _filterButton(
-      BuildContext context, FilterLoaded state, int index) {
+  Widget _filterButton(BuildContext context, FilterLoaded state, int index) {
     return GestureDetector(
       onTap: () {
         context.read<FilterBloc>().add(
@@ -216,7 +246,7 @@ Widget _listBarang(BarangState state) {
   );
 }
 
-Container _barangCard(BarangState state, int index, BuildContext context) {
+Widget _barangCard(BarangState state, int index, BuildContext context) {
   return Container(
     decoration: BoxDecoration(
       color: Colors.transparent,

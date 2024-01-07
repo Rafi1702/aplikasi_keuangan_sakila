@@ -14,66 +14,105 @@ class LaporanPengeluaranPage extends StatelessWidget {
     return Scaffold(
       appBar: _appBar(),
       body: SafeArea(
-        child: BlocBuilder<PengeluaranBloc, PengeluaranState>(
-          builder: (context, state) {
-            if (state.status == PengeluaranStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            if (state.status == PengeluaranStatus.error) {
-              return Center(child: Text(state.errorMessage));
-            }
-
-            return state.pengeluaran.isEmpty
-                ? const Center(child: Text("Tidak Ada Pengeluaran"))
-                : Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 10.0,
-                    ),
-                    child: ListView.builder(
-                        itemCount: state.pengeluaran.length,
-                        itemBuilder: (context, index) {
-                          // int tanggal =
-                          //     state.pengeluaran[index].tanggalPengeluaran.day;
-                          // int tahun =
-                          //     state.pengeluaran[index].tanggalPengeluaran.year;
-                          // String bulan = DateFormat("MMMM").format(DateTime(0,
-                          //     state.pengeluaran[index].tanggalPengeluaran.month));
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => DetailPengeluaranPage(
-                                      id: state
-                                          .pengeluaran[index].idPengeluaran),
-                                ),
-                              );
-                            },
-                            child: Card(
-                              child: ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.pink[100],
-                                  child: Center(
-                                    child: Text("${index + 1}"),
-                                  ),
-                                ),
-                                title: Text(
-                                  DateFormat.yMMMMEEEEd('id_ID').format(state
-                                      .pengeluaran[index].tanggalPengeluaran),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                  );
-            ;
+        child: BlocListener<PengeluaranBloc, PengeluaranState>(
+          listenWhen: (previous, current) {
+            return current.isDeleting || previous.isDeleting;
           },
+          listener: (context, state) {
+            if (state.status == PengeluaranStatus.error) {
+              showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                        content: Text(state.failureMessage),
+                        actions: [
+                          ElevatedButton(
+                            child: const Text('Pop'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        ]);
+                  });
+            }
+          },
+          child: BlocBuilder<PengeluaranBloc, PengeluaranState>(
+            builder: (context, state) {
+              if (state.status == PengeluaranStatus.loading &&
+                  state.pengeluaran.isEmpty) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (state.status == PengeluaranStatus.error &&
+                  state.pengeluaran.isEmpty) {
+                return Center(child: Text(state.errorMessage));
+              }
+
+              return state.pengeluaran.isEmpty
+                  ? const Center(child: Text("Tidak Ada Pengeluaran"))
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 10.0,
+                      ),
+                      child: Column(
+                        children: [
+                          ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: state.pengeluaran.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            DetailPengeluaranPage(
+                                                id: state.pengeluaran[index]
+                                                    .idPengeluaran),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    child: ListTile(
+                                      trailing: IconButton(
+                                        icon: Icon(Icons.clear),
+                                        onPressed: () {
+                                          context.read<PengeluaranBloc>().add(
+                                                DeletePengeluaranEvent(
+                                                    id: state.pengeluaran[index]
+                                                        .idPengeluaran),
+                                              );
+                                        },
+                                      ),
+                                      leading: CircleAvatar(
+                                        backgroundColor: Colors.pink[100],
+                                        child: Center(
+                                          child: Text("${index + 1}"),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        DateFormat.yMMMMEEEEd('id_ID').format(
+                                            state.pengeluaran[index]
+                                                .tanggalPengeluaran),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                          FloatingActionButton(
+                              child: state.isDeleting
+                                  ? const CircularProgressIndicator()
+                                  : Container(),
+                              onPressed: () {}),
+                        ],
+                      ),
+                    );
+            },
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(onPressed: () async {}),
     );
   }
 

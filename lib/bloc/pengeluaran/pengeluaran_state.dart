@@ -18,17 +18,17 @@ class PengeluaranState extends Equatable {
     this.failureMessage = '',
     this.isGetting = false,
     this.isInserting = false,
-    this.isUpdating = false,
+    this.isDeleting = false,
   });
-
+  //failureMessage ketika kita insert atau delete (muncul pada dialog)
+  //errorMessage ketika kita get pengeluaran
   final bool isGetting;
   final bool isInserting;
-  final bool isUpdating;
-
+  final bool isDeleting;
+  final String failureMessage;
   final PengeluaranStatus status;
   final List<DataPengeluaran> pengeluaran;
   final String errorMessage;
-  final String failureMessage;
 
   PengeluaranState copyWith(
       {PengeluaranStatus? status,
@@ -37,7 +37,7 @@ class PengeluaranState extends Equatable {
       String? failureMessage,
       bool? isGetting,
       bool? isInserting,
-      bool? isUpdating}) {
+      bool? isDeleting}) {
     return PengeluaranState(
         status: status ?? this.status,
         pengeluaran: pengeluaran ?? this.pengeluaran,
@@ -45,10 +45,10 @@ class PengeluaranState extends Equatable {
         failureMessage: failureMessage ?? this.failureMessage,
         isGetting: isGetting ?? this.isGetting,
         isInserting: isInserting ?? this.isInserting,
-        isUpdating: isUpdating ?? this.isUpdating);
+        isDeleting: isDeleting ?? this.isDeleting);
   }
 
   @override
   List<Object> get props =>
-      [status, pengeluaran, errorMessage, isGetting, isUpdating, isInserting];
+      [status, pengeluaran, errorMessage, isGetting, isDeleting, isInserting];
 }

@@ -10,12 +10,9 @@ import 'package:sakila_store_project/services/exception.dart';
 
 class PengeluaranService {
   Future<Pengeluaran> getPengeluaran() async {
-    print(HttpClient.API_KEY);
-
     try {
       final response = await HttpClient.client
           .get(Uri.parse('${HttpClient.API_KEY}/pengeluaran'));
-      print(response.body);
 
       return Pengeluaran.fromJson(jsonDecode(response.body));
     } on SocketException {
@@ -34,8 +31,6 @@ class PengeluaranService {
         "barang": barangList,
       });
 
-      print(reqBody);
-
       final response = await HttpClient.client
           .post(Uri.parse('${HttpClient.API_KEY}/pengeluaran'), body: reqBody);
 
@@ -50,6 +45,25 @@ class PengeluaranService {
       }
 
       return DataPengeluaran.fromJson(jsonDecode(response.body)['data']);
+    } on SocketException {
+      throw CustomException("Cek Koneksi Internet Anda");
+    }
+  }
+
+  Future<void> deletePengeluaran(int id) async {
+    try {
+      final response = await HttpClient.client
+          .delete(Uri.parse('${HttpClient.API_KEY}/pengeluaran/$id'));
+
+      final errMessage = jsonDecode(response.body)['message'];
+
+      if (response.statusCode == 409) {
+        throw CustomException(errMessage);
+      }
+
+      if (response.statusCode == 400) {
+        throw CustomException(errMessage);
+      }
     } on SocketException {
       throw CustomException("Cek Koneksi Internet Anda");
     }
