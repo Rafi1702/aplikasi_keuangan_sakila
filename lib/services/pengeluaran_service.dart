@@ -1,13 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:http_interceptor/http/intercepted_client.dart';
-import 'package:http_interceptor/http_interceptor.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
-import 'package:sakila_store_project/model/detail_pengeluaran_model.dart';
+
 import 'package:sakila_store_project/model/pengeluaran_model.dart';
 import 'package:sakila_store_project/network/api_client.dart';
-import 'package:sakila_store_project/network/global_interceptor.dart';
+
 import 'package:sakila_store_project/services/exception.dart';
 
 class PengeluaranService {
@@ -31,14 +29,15 @@ class PengeluaranService {
       List<Map<String, dynamic>> barangList =
           barang.map((item) => item.toJson()).toList();
 
-      print("MASUK NIH");
-      final response = await HttpClient.client.post(
-        Uri.parse('${HttpClient.API_KEY}/pengeluaran'),
-        body: jsonEncode({
-          "tanggal_pengeluaran": tanggal,
-          "barang": barangList,
-        }),
-      );
+      final reqBody = jsonEncode({
+        "tanggal_pengeluaran": tanggal,
+        "barang": barangList,
+      });
+
+      print(reqBody);
+
+      final response = await HttpClient.client
+          .post(Uri.parse('${HttpClient.API_KEY}/pengeluaran'), body: reqBody);
 
       final errMessage = jsonDecode(response.body)['message'];
 

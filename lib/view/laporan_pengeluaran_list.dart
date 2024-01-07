@@ -17,55 +17,59 @@ class LaporanPengeluaranPage extends StatelessWidget {
         child: BlocBuilder<PengeluaranBloc, PengeluaranState>(
           builder: (context, state) {
             if (state.status == PengeluaranStatus.loading) {
-              const Center(
+              return const Center(
                 child: CircularProgressIndicator(),
               );
             }
-            if (state.status == PengeluaranStatus.loaded ||
-                state.status == PengeluaranStatus.error) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 10.0,
-                ),
-                child: ListView.builder(
-                    itemCount: state.pengeluaran.length,
-                    itemBuilder: (context, index) {
-                      // int tanggal =
-                      //     state.pengeluaran[index].tanggalPengeluaran.day;
-                      // int tahun =
-                      //     state.pengeluaran[index].tanggalPengeluaran.year;
-                      // String bulan = DateFormat("MMMM").format(DateTime(0,
-                      //     state.pengeluaran[index].tanggalPengeluaran.month));
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => DetailPengeluaranPage(
-                                  id: state.pengeluaran[index].idPengeluaran),
-                            ),
-                          );
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: Colors.pink[100],
-                              child: Center(
-                                child: Text("${index + 1}"),
+            if (state.status == PengeluaranStatus.error) {
+              return Center(child: Text(state.errorMessage));
+            }
+
+            return state.pengeluaran.isEmpty
+                ? const Center(child: Text("Tidak Ada Pengeluaran"))
+                : Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 10.0,
+                    ),
+                    child: ListView.builder(
+                        itemCount: state.pengeluaran.length,
+                        itemBuilder: (context, index) {
+                          // int tanggal =
+                          //     state.pengeluaran[index].tanggalPengeluaran.day;
+                          // int tahun =
+                          //     state.pengeluaran[index].tanggalPengeluaran.year;
+                          // String bulan = DateFormat("MMMM").format(DateTime(0,
+                          //     state.pengeluaran[index].tanggalPengeluaran.month));
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailPengeluaranPage(
+                                      id: state
+                                          .pengeluaran[index].idPengeluaran),
+                                ),
+                              );
+                            },
+                            child: Card(
+                              child: ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.pink[100],
+                                  child: Center(
+                                    child: Text("${index + 1}"),
+                                  ),
+                                ),
+                                title: Text(
+                                  DateFormat.yMMMMEEEEd('id_ID').format(state
+                                      .pengeluaran[index].tanggalPengeluaran),
+                                ),
                               ),
                             ),
-                            title: Text(
-                              DateFormat.yMMMMEEEEd('id_ID').format(
-                                  state.pengeluaran[index].tanggalPengeluaran),
-                            ),
-                          ),
-                        ),
-                      );
-                    }),
-              );
-            }
-            return Container();
+                          );
+                        }),
+                  );
+            ;
           },
         ),
       ),
@@ -73,5 +77,7 @@ class LaporanPengeluaranPage extends StatelessWidget {
     );
   }
 
-  AppBar _appBar() => AppBar(title: const Text("List Transaksi"));
+  AppBar _appBar() {
+    return AppBar(title: const Text("List Transaksi"));
+  }
 }

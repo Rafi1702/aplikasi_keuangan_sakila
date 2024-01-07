@@ -35,8 +35,8 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
 
   void insertPengeluaran(InsertPengeluaranEvent event, Emitter emit) async {
     // List<DataPengeluaran> currentData = currentState.pengeluaran;
-    emit(state.copyWith(status: PengeluaranStatus.loading));
-    await Future.delayed(const Duration(seconds: 3));
+    emit(state.copyWith(status: PengeluaranStatus.pending));
+
     try {
       List<DataBarang> filteredBarang =
           event.barang.where((e) => e.kuantitas! > 0).toList();
@@ -48,7 +48,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
           status: PengeluaranStatus.loaded, pengeluaran: updatedData));
     } catch (e) {
       emit(state.copyWith(
-          status: PengeluaranStatus.error, errorMessage: e.toString()));
+          status: PengeluaranStatus.failure, failureMessage: e.toString()));
     }
   }
 }

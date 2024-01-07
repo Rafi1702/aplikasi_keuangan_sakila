@@ -4,10 +4,10 @@ import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/bloc/filter/filter_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
+import 'package:sakila_store_project/model/barang_model.dart';
 
 import 'package:sakila_store_project/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
-import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
 class TransaksiBaruPage extends StatefulWidget {
   const TransaksiBaruPage({super.key});
@@ -17,7 +17,8 @@ class TransaksiBaruPage extends StatefulWidget {
 }
 
 class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
-  final LoadingOverlay _loadingOverlay = LoadingOverlay();
+  // final LoadingOverlay _loadingOverlay = LoadingOverlay();
+  List<DataBarang> barang = [];
   // final FilterBloc filter = FilterBloc();
   @override
   Widget build(BuildContext context) {
@@ -36,27 +37,13 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
         vertical: 24.0,
       ),
       child: BlocListener<PengeluaranBloc, PengeluaranState>(
-        listenWhen: (previous, current) {
-          if (current.pengeluaran.isEmpty) {
-            return false;
-          }
-
-          return true;
-        },
         listener: (context, state) {
-          if (state.status == PengeluaranStatus.loading) {
-            _loadingOverlay.show(context);
-          }
-          if (state.status == PengeluaranStatus.loaded) {
-            _loadingOverlay.hide();
-          }
-          if (state.status == PengeluaranStatus.error) {
-            _loadingOverlay.hide();
+          if (state.status == PengeluaranStatus.failure) {
             showDialog<void>(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                      content: Text(state.errorMessage),
+                      content: Text(state.failureMessage),
                       actions: [
                         ElevatedButton(
                           child: const Text('Pop'),
@@ -67,61 +54,73 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
                       ]);
                 });
           }
+          if (state.status == PengeluaranStatus.success) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text('Berhasil Menambahkan Transaksi'),
+              action: SnackBarAction(
+                label: 'close',
+                onPressed: () {},
+              ),
+            ));
+          }
         },
         child: BlocBuilder<BarangBloc, BarangState>(
           builder: (context, state) {
-            if (state.status == BarangStatus.loading) {
-              return const CircularProgressIndicator();
-            }
-            if (state.status == BarangStatus.loaded) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BlocProvider(
-                    create: (context) => FilterBloc()..add(GetFilterEvent()),
-                    child: BlocBuilder<FilterBloc, FilterState>(
-                      builder: (context, state) {
-                        if (state is FilterLoaded) {
-                          return _filterContainer(state);
-                        }
-                        return Container();
-                      },
-                    ),
+            barang = state.barang;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlocProvider(
+                  create: (context) => FilterBloc()..add(GetFilterEvent()),
+                  child: BlocBuilder<FilterBloc, FilterState>(
+                    builder: (context, state) {
+                      if (state is FilterLoaded) {
+                        return _filterContainer(state);
+                      }
+                      return Container();
+                    },
                   ),
-                  const SizedBox(height: 10.0),
-                  _listBarang(state),
-                  const SizedBox(height: 16.0),
-                  _calendarBox(),
-                  const SizedBox(
-                    height: 30.0,
-                  ),
-                  _roundedButton(context, state),
-                ],
-              );
-            }
-            if (state.status == BarangStatus.error) {
-              return Center(child: Text(state.errorMessage));
-            }
-            return Container();
+                ),
+                const SizedBox(height: 10.0),
+                _listBarang(state),
+                const SizedBox(height: 16.0),
+                _calendarBox(),
+                const SizedBox(
+                  height: 30.0,
+                ),
+                BlocBuilder<PengeluaranBloc, PengeluaranState>(
+                  builder: (context, state) {
+                    return _roundedButton(context, state, barang);
+                  },
+                ),
+              ],
+            );
           },
         ),
       ),
     );
   }
 
-  Widget _roundedButton(BuildContext context, BarangState state) {
+  Widget _roundedButton(
+      BuildContext context, PengeluaranState state, List<DataBarang> barang) {
     return Center(
       child: SizedBox(
         width: 240.0,
         child: CustomButton(
-          color: AppColors.secondaryColor,
-          widget: const Text(
-            "Simpan Transaksi",
-            style: TextStyle(color: Colors.black),
-          ),
-          onPressed: () async {
-            context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
-                barang: state.barang, tanggalPengeluaran: "2024-01-06"));
+          color: state.status == PengeluaranStatus.loading
+              ? Colors.grey
+              : AppColors.secondaryColor,
+          widget: state.status == PengeluaranStatus.pending
+              ? const CircularProgressIndicator()
+              : const Text(
+                  "Simpan Transaksi",
+                  style: TextStyle(color: Colors.black),
+                ),
+          onPressed: () {
+            state.status == PengeluaranStatus.loading
+                ? null
+                : context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
+                    barang: barang, tanggalPengeluaran: "2024-01-12"));
           },
           radiusValue: 30.0,
           enableBorderSide: false,
@@ -194,13 +193,8 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
 
 Widget _listBarang(BarangState state) {
   return SizedBox(
-    child: state.barang.isEmpty
-        ? const Center(
-            child: Text(
-              'List Kosong',
-              style: TextStyle(),
-            ),
-          )
+    child: state.status == BarangStatus.loading
+        ? const Center(child: CircularProgressIndicator())
         : GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

@@ -1,6 +1,6 @@
 part of 'barang_bloc.dart';
 
-enum BarangStatus { initial, loading, loaded, error }
+enum BarangStatus { initial, pending, failure, loading, loaded, error }
 
 class BarangState extends Equatable {
   const BarangState({

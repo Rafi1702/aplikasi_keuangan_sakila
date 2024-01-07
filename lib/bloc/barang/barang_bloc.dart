@@ -16,6 +16,7 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
   }
   void getBarang(GetBarangEvent event, Emitter emit) async {
     emit(state.copyWith(status: BarangStatus.loading));
+    await Future.delayed(const Duration(seconds: 5));
     try {
       final barang = await BarangService().getBarang();
       emit(state.copyWith(status: BarangStatus.loaded, barang: barang.data));
@@ -35,21 +36,6 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
     ];
 
     emit(state.copyWith(status: BarangStatus.loaded, barang: updatedBarang));
-
-    // final currentState = state;
-
-    // if (currentState is BarangLoaded) {
-    //   List<DataBarang> updatedBarang = [
-    //     for (final barang in currentState.barang)
-    //       if (barang.idBarang == event.id)
-    //         barang.copyWith(kuantitas: (barang.kuantitas ?? 0) + 1)
-    //       else
-    //         barang
-    //   ];
-    //   print(updatedBarang[1].kuantitas);
-
-    //   emit(BarangLoaded(barang: updatedBarang));
-    // }
   }
 
   void kurangiKuantitas(KurangiKuantitasEvent event, Emitter emit) {
@@ -62,22 +48,6 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
     ];
 
     emit(state.copyWith(status: BarangStatus.loaded, barang: updatedBarang));
-    // final currentState = state;
-
-    // if (currentState is BarangLoaded) {
-    //   List<DataBarang> updatedBarang = [
-    //     for (final barang in currentState.barang)
-    //       if (barang.idBarang == event.id)
-    //         barang.copyWith(
-    //             kuantitas: barang.kuantitas! <= 0
-    //                 ? barang.kuantitas
-    //                 : (barang.kuantitas ?? 0) - 1)
-    //       else
-    //         barang
-    //   ];
-
-    //   emit(BarangLoaded(barang: updatedBarang));
-    // }
   }
 
   void resetStok(ResetStokEvent event, Emitter emit) {
@@ -87,16 +57,5 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
             : e.copyWith(stokBarang: e.stokBarang - (e.kuantitas ?? 0)))
         .toList();
     emit(state.copyWith(status: BarangStatus.loaded, barang: updatedBarang));
-    // final currentState = state;
-
-    // if (currentState is BarangLoaded) {
-    //   List<DataBarang> updatedBarang = currentState.barang
-    //       .map((e) => e.kuantitas! > e.stokBarang
-    //           ? e.copyWith(stokBarang: e.stokBarang)
-    //           : e.copyWith(stokBarang: e.stokBarang - (e.kuantitas ?? 0)))
-    //       .toList();
-
-    //   emit(BarangLoaded(barang: updatedBarang));
-    // }
   }
 }

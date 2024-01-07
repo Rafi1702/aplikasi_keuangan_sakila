@@ -89,7 +89,7 @@ class _ListBarangPageState extends State<ListBarangPage> {
     );
   }
 
-  PreferredSizeWidget _appBar() {
+  AppBar _appBar() {
     return AppBar(
       title: const Text("Data Barang"),
       backgroundColor: AppColors.primaryColor,
