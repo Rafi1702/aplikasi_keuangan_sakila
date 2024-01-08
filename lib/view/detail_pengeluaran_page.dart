@@ -16,7 +16,7 @@ class DetailPengeluaranPage extends StatelessWidget {
         child: BlocBuilder<DetailPengeluaranBloc, DetailPengeluaranState>(
           builder: (context, state) {
             if (state is DetailPengeluaranLoading) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
             if (state is DetailPengeluaranLoaded) {
               return ListView.builder(

@@ -61,14 +61,16 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               _row2(),
               const SizedBox(height: 40.0),
               pictureContainer(),
-              const SizedBox(height: 80.0),
+              const SizedBox(height: 100.0),
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(
                   color: AppColors.secondaryColor,
                   widget: const Text("Test"),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {}
+                    if (_formKey.currentState!.validate()) {
+                      print('Test');
+                    }
                   },
                   radiusValue: 10.0,
                   enableBorderSide: false,
@@ -110,7 +112,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
             controller: _hargaBarangController,
             radiusValue: 4.0,
             validator: (val) {
-              return GlobalValidator.fieldBarang(val, 'Harga')!;
+              return GlobalValidator.fieldBarang(val, 'Harga');
             },
           ),
         ),
@@ -140,10 +142,29 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
             hintText: '',
             radiusValue: 4.0,
             validator: (val) {
-              return GlobalValidator.fieldBarang(val, 'Nama')!;
+              return GlobalValidator.fieldBarang(val, 'Nama');
             },
           ),
         ),
+        Expanded(
+            child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(width: 0.5),
+          ),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            IconButton(
+              icon: const Icon(Icons.remove),
+              onPressed: () {},
+            ),
+            Text(quantity.toString()),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () {},
+            ),
+          ]),
+        )),
       ],
     );
   }
