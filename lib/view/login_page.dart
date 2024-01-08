@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sakila_store_project/bloc/login/login_bloc.dart';
 
-import 'package:sakila_store_project/theme/colors.dart';
+import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/view/home_page.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 import 'package:sakila_store_project/widgets/custom_textfield.dart';

@@ -1,5 +1,5 @@
 import 'package:http_interceptor/http_interceptor.dart';
-import 'package:sakila_store_project/helper/shared_pref.dart';
+import 'package:sakila_store_project/core/helper/shared_pref.dart';
 
 class GlobalInterceptor implements InterceptorContract {
   GlobalInterceptor();

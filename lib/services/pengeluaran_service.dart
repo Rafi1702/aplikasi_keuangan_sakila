@@ -12,7 +12,10 @@ class PengeluaranService {
   Future<Pengeluaran> getPengeluaran() async {
     try {
       final response = await HttpClient.client
-          .get(Uri.parse('${HttpClient.API_KEY}/pengeluaran'));
+          .get(Uri.parse('${HttpClient.API_URL}/pengeluaran'));
+      if (response.statusCode == 500) {
+        throw CustomException(HttpClient.errorDecoder(response));
+      }
 
       return Pengeluaran.fromJson(jsonDecode(response.body));
     } on SocketException {
@@ -32,40 +35,36 @@ class PengeluaranService {
       });
 
       final response = await HttpClient.client
-          .post(Uri.parse('${HttpClient.API_KEY}/pengeluaran'), body: reqBody);
-
-      final errMessage = jsonDecode(response.body)['message'];
+          .post(Uri.parse('${HttpClient.API_URL}/pengeluaran'), body: reqBody);
 
       if (response.statusCode == 409) {
-        throw CustomException(errMessage);
+        throw CustomException(HttpClient.errorDecoder(response));
       }
 
       if (response.statusCode == 400) {
-        throw CustomException(errMessage);
+        throw CustomException(HttpClient.errorDecoder(response));
       }
 
       return DataPengeluaran.fromJson(jsonDecode(response.body)['data']);
     } on SocketException {
-      throw CustomException("Cek Koneksi Internet Anda");
+      throw CustomException(SOCKET_EXCEPTION);
     }
   }
 
   Future<void> deletePengeluaran(int id) async {
     try {
       final response = await HttpClient.client
-          .delete(Uri.parse('${HttpClient.API_KEY}/pengeluaran/$id'));
-
-      final errMessage = jsonDecode(response.body)['message'];
+          .delete(Uri.parse('${HttpClient.API_URL}/pengeluaran/$id'));
 
       if (response.statusCode == 409) {
-        throw CustomException(errMessage);
+        throw CustomException(HttpClient.errorDecoder(response));
       }
 
       if (response.statusCode == 400) {
-        throw CustomException(errMessage);
+        throw CustomException(HttpClient.errorDecoder(response));
       }
     } on SocketException {
-      throw CustomException("Cek Koneksi Internet Anda");
+      throw CustomException(SOCKET_EXCEPTION);
     }
   }
 }

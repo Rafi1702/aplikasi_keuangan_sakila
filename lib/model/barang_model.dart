@@ -9,6 +9,7 @@ import 'package:sakila_store_project/model/detail_pengeluaran_model.dart';
 enum JenisBarang {
   lama("Lama"),
   baru("Baru");
+
   const JenisBarang(this.value);
   final String value;
 }
@@ -89,11 +90,11 @@ class DataBarang {
       );
 
   Map<String, dynamic> toJson() => {
-        "id_barang": idBarang,
-        // "nama_barang": namaBarang,
-        // "jenis_barang": jenisBarang,
-        // "stok_barang": stokBarang,
-        // "harga_barang": hargaBarang,
+        // "id_barang": idBarang,
+        "nama_barang": namaBarang,
+        "jenis_barang": jenisBarang,
+        "stok_barang": stokBarang,
+        "harga_barang": hargaBarang,
         "kuantitas": kuantitas,
       };
 }

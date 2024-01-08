@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sakila_store_project/theme/colors.dart';
+import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/view/laporan_pengeluaran_list.dart';
 
 import 'package:sakila_store_project/widgets/custom_button.dart';

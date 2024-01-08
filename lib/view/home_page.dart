@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sakila_store_project/theme/colors.dart';
+import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/view/laporan_page.dart';
 import 'package:sakila_store_project/view/list_barang_page.dart';
 import 'package:sakila_store_project/view/tambah_barang_page.dart';

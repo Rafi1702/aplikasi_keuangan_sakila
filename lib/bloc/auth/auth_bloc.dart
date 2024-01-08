@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:sakila_store_project/helper/shared_pref.dart';
+import 'package:sakila_store_project/core/helper/shared_pref.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

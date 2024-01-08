@@ -1,3 +1,5 @@
+const SOCKET_EXCEPTION = "Cek Koneksi Internet";
+
 class CustomException implements Exception {
   final String message;
   CustomException(this.message);

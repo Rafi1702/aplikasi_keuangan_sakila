@@ -18,6 +18,15 @@ class UpdatedBarangEvent extends BarangEvent {
   List<Object> get props => [jenis];
 }
 
+class InsertBarangEvent extends BarangEvent {
+  final DataBarang barang;
+
+  const InsertBarangEvent({required this.barang});
+
+  @override
+  List<Object> get props => [barang];
+}
+
 class TambahKuantitasEvent extends BarangEvent {
   final int id;
 

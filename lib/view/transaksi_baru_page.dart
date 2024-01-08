@@ -7,7 +7,7 @@ import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
 
-import 'package:sakila_store_project/theme/colors.dart';
+import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 
 class TransaksiBaruPage extends StatefulWidget {

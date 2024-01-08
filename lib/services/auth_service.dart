@@ -2,18 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-// import 'package:http/http.dart' as http;
-import 'package:http_interceptor/http_interceptor.dart' as http;
-import 'package:sakila_store_project/helper/shared_pref.dart';
+import 'package:sakila_store_project/core/helper/shared_pref.dart';
+import 'package:sakila_store_project/network/api_client.dart';
 import 'package:sakila_store_project/services/exception.dart';
 
 class AuthService {
   Future<void> login({required String email, required String password}) async {
     try {
-      final response = await http
+      final response = await HttpClient.client
           .post(
-            Uri.parse('http://10.0.2.2:3001/api/login'),
-            headers: {'Content-Type': 'application/json'},
+            Uri.parse('${HttpClient.API_URL}/login'),
             body: jsonEncode(
               {"email": email, "password": password},
             ),
@@ -26,10 +24,10 @@ class AuthService {
       if (response.statusCode == 401) {
         throw CustomException(jsonDecode(response.body)['message']);
       }
-    } on SocketException catch (_) {
+    } on SocketException {
       throw CustomException("No Internet Connection");
-    } on TimeoutException catch (e) {
-      throw CustomException(e.message ?? 'Waktu Habis');
+    } on TimeoutException {
+      throw CustomException('Waktu Habis');
     }
   }
 }

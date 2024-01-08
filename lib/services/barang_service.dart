@@ -9,12 +9,23 @@ class BarangService {
   Future<BarangModel> getBarang() async {
     try {
       final response = await HttpClient.client
-          .get(Uri.parse('http://10.0.2.2:3001/api/barang'));
-      print(response.body);
+          .get(Uri.parse('${HttpClient.API_URL}/barang'));
 
       return BarangModel.fromJson(jsonDecode(response.body));
     } on SocketException {
-      throw CustomException("Cek Koneksi Internet");
+      throw CustomException(SOCKET_EXCEPTION);
+    }
+  }
+
+  Future<DataBarang> insertBarang(DataBarang barang) async {
+    try {
+      final response = await HttpClient.client.post(
+          Uri.parse('${HttpClient.API_URL}/barang'),
+          body: jsonEncode(barang.toJson()));
+
+      return DataBarang.fromJson(jsonDecode(response.body));
+    } on SocketException {
+      throw CustomException(SOCKET_EXCEPTION);
     }
   }
 }
