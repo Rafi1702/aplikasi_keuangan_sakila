@@ -13,78 +13,80 @@ class LaporanPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Column(children: [
-      _container(
-          imagePath: 'assets/calendar.png',
-          text: 'Pilih Tanggal',
-          isMoreWidget: true,
-          isWidgetCenter: false,
-          context: context),
-      const SizedBox(height: 16.0),
-      _container(
-          imagePath: 'assets/report.png',
-          text: 'Laporan Pemasukan',
-          isMoreWidget: false,
-          isWidgetCenter: false),
-      const SizedBox(height: 8.0),
-      _container(
-          imagePath: 'assets/report.png',
-          text: 'Laporan Pengeluaran',
-          isMoreWidget: false,
-          isWidgetCenter: false,
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const LaporanPengeluaranPage()));
-          }),
-      const SizedBox(height: 50.0),
-      _container(
-          imagePath: 'assets/pdf.png',
-          text: 'Laporan Pengeluaran',
-          isMoreWidget: false,
-          isWidgetCenter: true),
-      SizedBox(height: MediaQuery.of(context).size.height * 0.3),
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 40.0,
-            width: 170.0,
-            child: CustomButton(
-              color: AppColors.secondaryColor,
-              widget: const Text(
-                "Simpan",
+    return Column(
+      children: [
+        _container(
+            imagePath: 'assets/calendar.png',
+            text: 'Pilih Tanggal',
+            isMoreWidget: true,
+            isWidgetCenter: false,
+            context: context),
+        const SizedBox(height: 16.0),
+        _container(
+            imagePath: 'assets/report.png',
+            text: 'Laporan Pemasukan',
+            isMoreWidget: false,
+            isWidgetCenter: false),
+        const SizedBox(height: 8.0),
+        _container(
+            imagePath: 'assets/report.png',
+            text: 'Laporan Pengeluaran',
+            isMoreWidget: false,
+            isWidgetCenter: false,
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const LaporanPengeluaranPage()));
+            }),
+        const SizedBox(height: 50.0),
+        _container(
+            imagePath: 'assets/pdf.png',
+            text: 'Laporan Pengeluaran',
+            isMoreWidget: false,
+            isWidgetCenter: true),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 40.0,
+              width: 170.0,
+              child: CustomButton(
+                color: AppColors.secondaryColor,
+                widget: const Text(
+                  "Simpan",
+                ),
+                onPressed: () {},
+                enableBorderSide: false,
+                radiusValue: 30.0,
               ),
-              onPressed: () {},
-              enableBorderSide: false,
-              radiusValue: 30.0,
             ),
-          ),
-          const SizedBox(width: 22.0),
-          SizedBox(
-            height: 40.0,
-            width: 150.0,
-            child: CustomButton(
-              color: AppColors.secondaryColor,
-              widget: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/share.png'),
-                  const SizedBox(width: 8.0),
-                  const Text(
-                    'Bagikan',
-                  ),
-                ],
+            const SizedBox(width: 22.0),
+            SizedBox(
+              height: 40.0,
+              width: 150.0,
+              child: CustomButton(
+                color: AppColors.secondaryColor,
+                widget: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset('assets/share.png'),
+                    const SizedBox(width: 8.0),
+                    const Text(
+                      'Bagikan',
+                    ),
+                  ],
+                ),
+                onPressed: () {},
+                enableBorderSide: false,
+                radiusValue: 30.0,
               ),
-              onPressed: () {},
-              enableBorderSide: false,
-              radiusValue: 30.0,
             ),
-          ),
-        ],
-      ),
-    ]);
+          ],
+        ),
+      ],
+    );
   }
 
   // PreferredSizeWidget _appBar() {

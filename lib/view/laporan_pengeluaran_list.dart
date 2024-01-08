@@ -56,58 +56,49 @@ class LaporanPengeluaranPage extends StatelessWidget {
                         horizontal: 20.0,
                         vertical: 10.0,
                       ),
-                      child: Column(
-                        children: [
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: state.pengeluaran.length,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            DetailPengeluaranPage(
-                                                id: state.pengeluaran[index]
-                                                    .idPengeluaran),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    child: ListTile(
-                                      trailing: IconButton(
-                                        icon: Icon(Icons.clear),
-                                        onPressed: () {
-                                          context.read<PengeluaranBloc>().add(
-                                                DeletePengeluaranEvent(
-                                                    id: state.pengeluaran[index]
-                                                        .idPengeluaran),
-                                              );
-                                        },
-                                      ),
-                                      leading: CircleAvatar(
-                                        backgroundColor: Colors.pink[100],
-                                        child: Center(
-                                          child: Text("${index + 1}"),
-                                        ),
-                                      ),
-                                      title: Text(
-                                        DateFormat.yMMMMEEEEd('id_ID').format(
-                                            state.pengeluaran[index]
-                                                .tanggalPengeluaran),
-                                      ),
-                                    ),
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: state.pengeluaran.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetailPengeluaranPage(
+                                            id: state.pengeluaran[index]
+                                                .idPengeluaran),
                                   ),
                                 );
-                              }),
-                          FloatingActionButton(
-                              child: state.isDeleting
-                                  ? const CircularProgressIndicator()
-                                  : Container(),
-                              onPressed: () {}),
-                        ],
-                      ),
+                              },
+                              child: Card(
+                                child: ListTile(
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.clear),
+                                    onPressed: () {
+                                      context.read<PengeluaranBloc>().add(
+                                            DeletePengeluaranEvent(
+                                                id: state.pengeluaran[index]
+                                                    .idPengeluaran),
+                                          );
+                                    },
+                                  ),
+                                  leading: CircleAvatar(
+                                    backgroundColor: Colors.pink[100],
+                                    child: Center(
+                                      child: Text("${index + 1}"),
+                                    ),
+                                  ),
+                                  title: Text(
+                                    DateFormat.yMMMMEEEEd('id_ID').format(
+                                        state.pengeluaran[index]
+                                            .tanggalPengeluaran),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }),
                     );
             },
           ),

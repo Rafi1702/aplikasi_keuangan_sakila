@@ -49,7 +49,10 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
           event.barang.where((e) => e.kuantitas! > 0).toList();
       DataPengeluaran data = await PengeluaranService()
           .insertPengeluaran(event.tanggalPengeluaran, filteredBarang);
-      List<DataPengeluaran> updatedData = [...state.pengeluaran, data];
+      int findIndexTanggal = findIndex(data.tanggalPengeluaran.toString(), state.pengeluaran);
+      print(findIndexTanggal);
+      List<DataPengeluaran> updatedData = List.from(state.pengeluaran)
+        ..insert(findIndexTanggal, data);
 
       emit(state.copyWith(
           status: PengeluaranStatus.loaded,
@@ -82,5 +85,18 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
           failureMessage: e.toString(),
           isDeleting: false));
     }
+  }
+
+  int findIndex(String tanggal, List<DataPengeluaran> dataPengeluaran) {
+    int index = 0;
+    for (int i = 0; i < dataPengeluaran.length; i++) {
+      if (tanggal.compareTo(dataPengeluaran[i].tanggalPengeluaran.toString()) ==
+          -1) {
+        return index;
+      }
+      index += 1;
+      continue;
+    }
+    return index;
   }
 }
