@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sakila_store_project/bloc/barang/barang_bloc.dart';
 import 'package:sakila_store_project/core/validators/validators.dart';
 import 'package:sakila_store_project/model/barang_model.dart';
 import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 import 'package:sakila_store_project/widgets/custom_dropdown.dart';
 import 'package:sakila_store_project/widgets/custom_textfield.dart';
+import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
 class TambahBarangPage extends StatefulWidget {
   const TambahBarangPage({super.key});
@@ -43,27 +46,36 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: Form(
         key: _formKey,
-        child: Column(
-          children: [
-            _row1(),
-            const SizedBox(height: 20.0),
-            _row2(),
-            const SizedBox(height: 40.0),
-            pictureContainer(),
-            const SizedBox(height: 100.0),
-            SizedBox(
-              width: double.infinity,
-              child: CustomButton(
-                color: AppColors.secondaryColor,
-                widget: const Text("Test"),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {}
-                },
-                radiusValue: 10.0,
-                enableBorderSide: false,
-              ),
-            )
-          ],
+        child: BlocListener<BarangBloc, BarangState>(
+          listenWhen: (previous, current) =>
+              current.isInserting || previous.isInserting,
+          listener: (context, state) {
+            if (state.status == BarangStatus.loaded) {
+              Dialogs.showErrorDialog(context, state.errorMessage);
+            }
+          },
+          child: Column(
+            children: [
+              _row1(),
+              const SizedBox(height: 20.0),
+              _row2(),
+              const SizedBox(height: 40.0),
+              pictureContainer(),
+              const SizedBox(height: 100.0),
+              SizedBox(
+                width: double.infinity,
+                child: CustomButton(
+                  color: AppColors.secondaryColor,
+                  widget: const Text("Test"),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {}
+                  },
+                  radiusValue: 10.0,
+                  enableBorderSide: false,
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -15,7 +15,6 @@ class PengeluaranState extends Equatable {
     this.status = PengeluaranStatus.initial,
     this.pengeluaran = const [],
     this.errorMessage = '',
-    this.failureMessage = '',
     this.isGetting = false,
     this.isInserting = false,
     this.isDeleting = false,
@@ -25,7 +24,7 @@ class PengeluaranState extends Equatable {
   final bool isGetting;
   final bool isInserting;
   final bool isDeleting;
-  final String failureMessage;
+
   final PengeluaranStatus status;
   final List<DataPengeluaran> pengeluaran;
   final String errorMessage;
@@ -34,7 +33,6 @@ class PengeluaranState extends Equatable {
       {PengeluaranStatus? status,
       List<DataPengeluaran>? pengeluaran,
       String? errorMessage,
-      String? failureMessage,
       bool? isGetting,
       bool? isInserting,
       bool? isDeleting}) {
@@ -42,7 +40,6 @@ class PengeluaranState extends Equatable {
         status: status ?? this.status,
         pengeluaran: pengeluaran ?? this.pengeluaran,
         errorMessage: errorMessage ?? this.errorMessage,
-        failureMessage: failureMessage ?? this.failureMessage,
         isGetting: isGetting ?? this.isGetting,
         isInserting: isInserting ?? this.isInserting,
         isDeleting: isDeleting ?? this.isDeleting);

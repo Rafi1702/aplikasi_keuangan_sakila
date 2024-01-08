@@ -26,8 +26,12 @@ class PengeluaranService {
   Future<DataPengeluaran> insertPengeluaran(
       String tanggal, List<DataBarang> barang) async {
     try {
-      List<Map<String, dynamic>> barangList =
-          barang.map((item) => item.toJson()).toList();
+      final barangList = barang
+          .map((data) => {
+                'id_barang': data.idBarang,
+                'kuantitas': data.kuantitas,
+              })
+          .toList();
 
       final reqBody = jsonEncode({
         "tanggal_pengeluaran": tanggal,
@@ -42,6 +46,10 @@ class PengeluaranService {
       }
 
       if (response.statusCode == 400) {
+        throw CustomException(HttpClient.errorDecoder(response));
+      }
+
+      if (response.statusCode == 500) {
         throw CustomException(HttpClient.errorDecoder(response));
       }
 

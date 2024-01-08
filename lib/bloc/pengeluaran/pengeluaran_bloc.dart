@@ -62,7 +62,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
     } catch (e) {
       emit(state.copyWith(
           status: PengeluaranStatus.error,
-          failureMessage: e.toString(),
+          errorMessage: e.toString(),
           isInserting: false));
     }
   }
@@ -83,7 +83,7 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
     } catch (e) {
       emit(state.copyWith(
           status: PengeluaranStatus.error,
-          failureMessage: e.toString(),
+          errorMessage: e.toString(),
           isDeleting: false));
     }
   }

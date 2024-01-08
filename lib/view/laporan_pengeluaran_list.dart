@@ -5,6 +5,7 @@ import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 
 import 'package:sakila_store_project/view/detail_pengeluaran_page.dart';
+import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
 class LaporanPengeluaranPage extends StatelessWidget {
   const LaporanPengeluaranPage({super.key});
@@ -20,20 +21,7 @@ class LaporanPengeluaranPage extends StatelessWidget {
           },
           listener: (context, state) {
             if (state.status == PengeluaranStatus.error) {
-              showDialog<void>(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                        content: Text(state.failureMessage),
-                        actions: [
-                          ElevatedButton(
-                            child: const Text('Pop'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        ]);
-                  });
+              Dialogs.showErrorDialog(context, state.errorMessage);
             }
           },
           child: BlocBuilder<PengeluaranBloc, PengeluaranState>(
@@ -65,10 +53,9 @@ class LaporanPengeluaranPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        DetailPengeluaranPage(
-                                            id: state.pengeluaran[index]
-                                                .idPengeluaran),
+                                    builder: (context) => DetailPengeluaranPage(
+                                        id: state
+                                            .pengeluaran[index].idPengeluaran),
                                   ),
                                 );
                               },
@@ -91,9 +78,8 @@ class LaporanPengeluaranPage extends StatelessWidget {
                                     ),
                                   ),
                                   title: Text(
-                                    DateFormat.yMMMMEEEEd('id_ID').format(
-                                        state.pengeluaran[index]
-                                            .tanggalPengeluaran),
+                                    DateFormat.yMMMMEEEEd('id_ID').format(state
+                                        .pengeluaran[index].tanggalPengeluaran),
                                   ),
                                 ),
                               ),

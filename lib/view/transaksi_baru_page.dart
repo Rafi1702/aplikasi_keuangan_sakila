@@ -9,6 +9,7 @@ import 'package:sakila_store_project/model/barang_model.dart';
 
 import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
+import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
 class TransaksiBaruPage extends StatefulWidget {
   const TransaksiBaruPage({super.key});
@@ -60,7 +61,6 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
         },
         listener: (context, state) {
           if (state.status == PengeluaranStatus.loaded) {
-            // print(state.isGetting);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: const Text('Berhasil Menambahkan Transaksi'),
               action: SnackBarAction(
@@ -70,20 +70,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
             ));
           }
           if (state.status == PengeluaranStatus.error) {
-            showDialog<void>(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                      content: Text(state.failureMessage),
-                      actions: [
-                        ElevatedButton(
-                          child: const Text('Pop'),
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                        )
-                      ]);
-                });
+            Dialogs.showErrorDialog(context, state.errorMessage);
           }
         },
         child: BlocBuilder<BarangBloc, BarangState>(
