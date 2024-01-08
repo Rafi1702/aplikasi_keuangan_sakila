@@ -23,7 +23,7 @@ class BarangService {
           Uri.parse('${HttpClient.API_URL}/barang'),
           body: jsonEncode(barang.toJson()));
 
-      return DataBarang.fromJson(jsonDecode(response.body));
+      return DataBarang.fromJson(jsonDecode(response.body)['data']);
     } on SocketException {
       throw CustomException(SOCKET_EXCEPTION);
     }

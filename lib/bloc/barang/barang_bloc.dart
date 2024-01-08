@@ -33,9 +33,10 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
   void insertBarang(InsertBarangEvent event, Emitter emit) async {
     emit(state.copyWith(status: BarangStatus.loading, isInserting: true));
     try {
-      final barang = await BarangService().insertBarang(event.barang);
+      final newBarang = await BarangService().insertBarang(event.barang);
+      print(newBarang.namaBarang);
       final List<DataBarang> updatedBarang = List.from(state.barang)
-        ..add(barang);
+        ..add(newBarang);
       emit(state.copyWith(
           status: BarangStatus.loaded,
           barang: updatedBarang,

@@ -32,7 +32,6 @@ class CustomDropDown extends StatelessWidget {
               width: 200,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(14),
-                color: Colors.redAccent,
               ),
             ),
             buttonStyleData: ButtonStyleData(

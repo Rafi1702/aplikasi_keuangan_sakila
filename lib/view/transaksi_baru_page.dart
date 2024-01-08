@@ -275,7 +275,7 @@ Widget _barangCard(BarangState state, int index, BuildContext context) {
             GestureDetector(
               onTap: () {
                 context.read<BarangBloc>().add(
-                    KurangiKuantitasEvent(id: state.barang[index].idBarang));
+                    KurangiKuantitasEvent(id: state.barang[index].idBarang!));
               },
               child: const Icon(Icons.remove, size: 20.0),
             ),
@@ -283,7 +283,7 @@ Widget _barangCard(BarangState state, int index, BuildContext context) {
             GestureDetector(
               onTap: () {
                 context.read<BarangBloc>().add(
-                    TambahKuantitasEvent(id: state.barang[index].idBarang));
+                    TambahKuantitasEvent(id: state.barang[index].idBarang!));
               },
               child: const Icon(Icons.add, size: 20.0),
             ),

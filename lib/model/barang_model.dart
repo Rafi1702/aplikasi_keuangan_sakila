@@ -44,21 +44,20 @@ class BarangModel {
 }
 
 class DataBarang {
-  int idBarang;
+  int? idBarang;
   String namaBarang;
   String jenisBarang;
   int stokBarang;
   int hargaBarang;
-  DetailPengeluaran? detailPengeluaran;
+
   int? kuantitas;
 
   DataBarang({
-    required this.idBarang,
+    this.idBarang,
     required this.namaBarang,
     required this.jenisBarang,
     required this.stokBarang,
     required this.hargaBarang,
-    this.detailPengeluaran,
     this.kuantitas = 0,
   });
 
@@ -77,7 +76,6 @@ class DataBarang {
         jenisBarang: jenisBarang ?? this.jenisBarang,
         stokBarang: stokBarang ?? this.stokBarang,
         hargaBarang: hargaBarang ?? this.hargaBarang,
-        detailPengeluaran: detailPengeluaran ?? this.detailPengeluaran,
         kuantitas: kuantitas ?? this.kuantitas,
       );
 
@@ -95,6 +93,6 @@ class DataBarang {
         "jenis_barang": jenisBarang,
         "stok_barang": stokBarang,
         "harga_barang": hargaBarang,
-        "kuantitas": kuantitas,
+        // "kuantitas": kuantitas,
       };
 }

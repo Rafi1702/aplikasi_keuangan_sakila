@@ -7,8 +7,8 @@ import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 import 'package:sakila_store_project/view/detail_pengeluaran_page.dart';
 import 'package:sakila_store_project/widgets/loading_dialog.dart';
 
-class LaporanPengeluaranPage extends StatelessWidget {
-  const LaporanPengeluaranPage({super.key});
+class PengeluaranHarianPage extends StatelessWidget {
+  const PengeluaranHarianPage({super.key});
 
   @override
   Widget build(BuildContext context) {

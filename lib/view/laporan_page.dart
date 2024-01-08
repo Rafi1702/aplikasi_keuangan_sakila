@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sakila_store_project/core/theme/colors.dart';
-import 'package:sakila_store_project/view/laporan_pengeluaran_list.dart';
+import 'package:sakila_store_project/view/pengeluaran_harian_page.dart';
 
 import 'package:sakila_store_project/widgets/custom_button.dart';
 
@@ -37,7 +37,7 @@ class LaporanPage extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const LaporanPengeluaranPage()));
+                      builder: (context) => const PengeluaranHarianPage()));
             }),
         const SizedBox(height: 50.0),
         _container(

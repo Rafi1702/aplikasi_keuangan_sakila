@@ -19,16 +19,11 @@ class TambahBarangPage extends StatefulWidget {
 class _TambahBarangPageState extends State<TambahBarangPage> {
   final TextEditingController _namaBarangController = TextEditingController();
   final TextEditingController _hargaBarangController = TextEditingController();
+  final TextEditingController _stokController = TextEditingController();
   int quantity = 0;
   final _formKey = GlobalKey<FormState>();
 
   String? _selectedValue;
-
-  void increaseQuantity() {
-    setState(() {
-      quantity += 1;
-    });
-  }
 
   void setJenisBarangValue(String value) {
     setState(() {
@@ -50,14 +45,13 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
           listenWhen: (previous, current) =>
               current.isInserting || previous.isInserting,
           listener: (context, state) {
-            if (state.status == BarangStatus.loaded) {
+            if (state.status == BarangStatus.error) {
               Dialogs.showErrorDialog(context, state.errorMessage);
             }
           },
           child: Column(
             children: [
               _row1(),
-              const SizedBox(height: 20.0),
               _row2(),
               const SizedBox(height: 40.0),
               pictureContainer(),
@@ -66,10 +60,21 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
                 width: double.infinity,
                 child: CustomButton(
                   color: AppColors.secondaryColor,
-                  widget: const Text("Test"),
+                  widget: const Text("Input Barang"),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      print('Test');
+                      final barang = DataBarang(
+                          namaBarang: _namaBarangController.text,
+                          hargaBarang: int.parse(_hargaBarangController.text),
+                          stokBarang: int.parse(_stokController.text),
+                          jenisBarang: _selectedValue!);
+
+                      context
+                          .read<BarangBloc>()
+                          .add(InsertBarangEvent(barang: barang));
+                    } else {
+                      Dialogs.showErrorDialog(
+                          context, 'Field barang masih ada yang kosong');
                     }
                   },
                   radiusValue: 10.0,
@@ -103,69 +108,92 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
   }
 
   Widget _row2() {
-    return Row(
-      children: [
-        Expanded(
-          child: CustomTextField(
-            text: 'Harga',
-            hintText: '',
-            controller: _hargaBarangController,
-            radiusValue: 4.0,
-            validator: (val) {
-              return GlobalValidator.fieldBarang(val, 'Harga');
-            },
-          ),
+    return SizedBox(
+      height: 80.0,
+      child: Center(
+        child: Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                keyboardType: TextInputType.number,
+                text: 'Harga',
+                hintText: '',
+                controller: _hargaBarangController,
+                radiusValue: 4.0,
+                validator: (val) {
+                  return GlobalValidator.fieldBarang(val, 'Harga');
+                },
+              ),
+            ),
+            const SizedBox(width: 30.0),
+            CustomDropDown(
+              list: JenisBarang.values.map((e) => e.value).toList(),
+              text: "",
+              value: _selectedValue,
+              onChanged: (val) {
+                setJenisBarangValue(val!);
+              },
+            ),
+          ],
         ),
-        const SizedBox(width: 30.0),
-        Expanded(
-          child: CustomDropDown(
-            list: JenisBarang.values.map((e) => e.value).toList(),
-            text: "",
-            value: _selectedValue,
-            onChanged: (val) {
-              setJenisBarangValue(val!);
-            },
-          ),
-        ),
-      ],
+      ),
     );
   }
 
   Widget _row1() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: CustomTextField(
-            text: 'Nama Barang',
-            controller: _namaBarangController,
+    return SizedBox(
+      height: 80.0,
+      child: Row(
+        children: [
+          Expanded(
+            child: CustomTextField(
+              text: 'Nama Barang',
+              controller: _namaBarangController,
+              hintText: '',
+              radiusValue: 4.0,
+              validator: (val) {
+                return GlobalValidator.fieldBarang(val, 'Nama');
+              },
+            ),
+          ),
+          const SizedBox(width: 20.0),
+
+          CustomTextField(
+            keyboardType: TextInputType.number,
+            size: 80.0,
+            text: 'Stok',
+            controller: _stokController,
             hintText: '',
             radiusValue: 4.0,
             validator: (val) {
-              return GlobalValidator.fieldBarang(val, 'Nama');
+              return GlobalValidator.fieldBarang(val, 'Stok');
             },
           ),
-        ),
-        Expanded(
-            child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            border: Border.all(width: 0.5),
-          ),
-          child:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            IconButton(
-              icon: const Icon(Icons.remove),
-              onPressed: () {},
-            ),
-            Text(quantity.toString()),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {},
-            ),
-          ]),
-        )),
-      ],
+          // Container(
+          //   decoration: BoxDecoration(
+          //     borderRadius: BorderRadius.circular(8.0),
+          //     border: Border.all(width: 0.5),
+          //   ),
+          //   child: Row(
+          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //       children: [
+          //         IconButton(
+          //           icon: const Icon(Icons.remove),
+          //           onPressed: () {
+
+          //           },
+          //         ),
+          //         Text(quantity.toString()),
+          //         IconButton(
+          //           icon: const Icon(Icons.add),
+          //           onPressed: () {
+
+          //           },
+          //         ),
+          //       ]),
+          // ),
+        ],
+      ),
     );
   }
 
