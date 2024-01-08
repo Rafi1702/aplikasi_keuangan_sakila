@@ -6,6 +6,13 @@ import 'dart:convert';
 
 import 'package:sakila_store_project/model/detail_pengeluaran_model.dart';
 
+enum JenisBarang {
+  lama("Lama"),
+  baru("Baru");
+  const JenisBarang(this.value);
+  final String value;
+}
+
 BarangModel barangFromJson(String str) =>
     BarangModel.fromJson(json.decode(str));
 

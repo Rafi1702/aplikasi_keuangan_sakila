@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sakila_store_project/model/barang_model.dart';
 import 'package:sakila_store_project/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
 import 'package:sakila_store_project/widgets/custom_dropdown.dart';
@@ -14,7 +15,22 @@ class TambahBarangPage extends StatefulWidget {
 class _TambahBarangPageState extends State<TambahBarangPage> {
   final TextEditingController _namaBarangController = TextEditingController();
   final TextEditingController _hargaBarangController = TextEditingController();
+  int quantity = 0;
+
   String? _selectedValue;
+
+  void increaseQuantity() {
+    setState(() {
+      quantity += 1;
+    });
+  }
+
+  void setJenisBarangValue(String value) {
+    setState(() {
+      _selectedValue = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return _buildBody();
@@ -25,23 +41,20 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
       child: Column(
         children: [
-          SizedBox(
-            height: 84.0,
-            child: Row(
-              children: [
-                Expanded(
-                  child: CustomTextField(
-                    text: 'Nama Barang',
-                    controller: _namaBarangController,
-                    hintText: '',
-                    radiusValue: 4.0,
-                  ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: CustomTextField(
+                  text: 'Nama Barang',
+                  controller: _namaBarangController,
+                  hintText: '',
+                  radiusValue: 4.0,
                 ),
-                const SizedBox(width: 30.0),
-                Expanded(child: _quantityWidget()),
-              ],
-            ),
+              ),
+            ],
           ),
+          const SizedBox(height: 20.0),
           Row(
             children: [
               Expanded(
@@ -55,14 +68,11 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               const SizedBox(width: 30.0),
               Expanded(
                 child: CustomDropDown(
-                  list: ["test", "Halo", "Aku"],
+                  list: JenisBarang.values.map((e) => e.value).toList(),
                   text: "",
                   value: _selectedValue,
                   onChanged: (val) {
-                    setState(() {
-                      _selectedValue = val;
-                    });
-                    print(_selectedValue);
+                    setJenisBarangValue(val!);
                   },
                 ),
               ),
@@ -98,44 +108,44 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
     );
   }
 
-  Widget _quantityWidget() {
-    return SizedBox(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.0),
-                bottomLeft: Radius.circular(10.0),
-              ),
-              color: AppColors.secondaryColor,
-            ),
-            child: const Icon(Icons.remove),
-          ),
-          const Expanded(
-            child: Card(
-              shape: RoundedRectangleBorder(),
-              color: Colors.white,
-              child: Text(
-                "Halo",
-                style: TextStyle(fontSize: 16.0),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-          Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(10.0),
-                bottomRight: Radius.circular(10.0),
-              ),
-              color: AppColors.secondaryColor,
-            ),
-            child: const Icon(Icons.add),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _quantityWidget() {
+  //   return SizedBox(
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Container(
+  //           decoration: const BoxDecoration(
+  //             borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(10.0),
+  //               bottomLeft: Radius.circular(10.0),
+  //             ),
+  //             color: AppColors.secondaryColor,
+  //           ),
+  //           child: const Icon(Icons.remove),
+  //         ),
+  //         const Expanded(
+  //           child: Card(
+  //             shape: RoundedRectangleBorder(),
+  //             color: Colors.white,
+  //             child: Text(
+  //               "Halo",
+  //               style: TextStyle(fontSize: 16.0),
+  //               textAlign: TextAlign.center,
+  //             ),
+  //           ),
+  //         ),
+  //         Container(
+  //           decoration: const BoxDecoration(
+  //             borderRadius: BorderRadius.only(
+  //               topRight: Radius.circular(10.0),
+  //               bottomRight: Radius.circular(10.0),
+  //             ),
+  //             color: AppColors.secondaryColor,
+  //           ),
+  //           child: const Icon(Icons.add),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }

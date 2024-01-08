@@ -49,8 +49,9 @@ class PengeluaranBloc extends Bloc<PengeluaranEvent, PengeluaranState> {
           event.barang.where((e) => e.kuantitas! > 0).toList();
       DataPengeluaran data = await PengeluaranService()
           .insertPengeluaran(event.tanggalPengeluaran, filteredBarang);
-      int findIndexTanggal = findIndex(data.tanggalPengeluaran.toString(), state.pengeluaran);
-      print(findIndexTanggal);
+      int findIndexTanggal =
+          findIndex(data.tanggalPengeluaran.toString(), state.pengeluaran);
+
       List<DataPengeluaran> updatedData = List.from(state.pengeluaran)
         ..insert(findIndexTanggal, data);
 
