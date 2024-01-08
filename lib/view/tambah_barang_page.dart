@@ -61,7 +61,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               _row2(),
               const SizedBox(height: 40.0),
               pictureContainer(),
-              const SizedBox(height: 100.0),
+              const SizedBox(height: 80.0),
               SizedBox(
                 width: double.infinity,
                 child: CustomButton(

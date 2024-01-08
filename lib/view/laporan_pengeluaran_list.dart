@@ -45,6 +45,7 @@ class LaporanPengeluaranPage extends StatelessWidget {
                         vertical: 10.0,
                       ),
                       child: ListView.builder(
+                          clipBehavior: Clip.none,
                           shrinkWrap: true,
                           itemCount: state.pengeluaran.length,
                           itemBuilder: (context, index) {
