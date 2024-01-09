@@ -5,10 +5,10 @@ import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_bloc.dart';
 import 'package:sakila_store_project/bloc/pengeluaran/pengeluaran_state.dart';
 
 import 'package:sakila_store_project/view/detail_pengeluaran_page.dart';
-import 'package:sakila_store_project/widgets/loading_dialog.dart';
+import 'package:sakila_store_project/widgets/custom_dialog.dart';
 
-class PengeluaranHarianPage extends StatelessWidget {
-  const PengeluaranHarianPage({super.key});
+class ListPengeluaranPage extends StatelessWidget {
+  const ListPengeluaranPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -63,13 +63,24 @@ class PengeluaranHarianPage extends StatelessWidget {
                               child: Card(
                                 child: ListTile(
                                   trailing: IconButton(
-                                    icon: Icon(Icons.clear),
+                                    icon: const Icon(Icons.clear),
                                     onPressed: () {
-                                      context.read<PengeluaranBloc>().add(
-                                            DeletePengeluaranEvent(
-                                                id: state.pengeluaran[index]
-                                                    .idPengeluaran),
-                                          );
+                                      Dialogs.commonDialog(
+                                          context: context,
+                                          message:
+                                              "Apakah anda yakin ingin menghapus pengeluaran?",
+                                          onPressed: () {
+                                            context.read<PengeluaranBloc>().add(
+                                                  DeletePengeluaranEvent(
+                                                      id: state
+                                                          .pengeluaran[index]
+                                                          .idPengeluaran),
+                                                );
+                                            if (state.status ==
+                                                PengeluaranStatus.loaded) {
+                                              Navigator.pop(context);
+                                            }
+                                          });
                                     },
                                   ),
                                   leading: CircleAvatar(

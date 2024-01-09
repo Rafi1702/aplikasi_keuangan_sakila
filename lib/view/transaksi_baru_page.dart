@@ -9,7 +9,7 @@ import 'package:sakila_store_project/model/barang_model.dart';
 
 import 'package:sakila_store_project/core/theme/colors.dart';
 import 'package:sakila_store_project/widgets/custom_button.dart';
-import 'package:sakila_store_project/widgets/loading_dialog.dart';
+import 'package:sakila_store_project/widgets/custom_dialog.dart';
 
 class TransaksiBaruPage extends StatefulWidget {
   const TransaksiBaruPage({super.key});
@@ -68,6 +68,10 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
                 onPressed: () {},
               ),
             ));
+
+            context
+                .read<BarangBloc>()
+                .add(const ResetStokEvent(jenisTransaksi: 'Pengeluaran'));
           }
           if (state.status == PengeluaranStatus.error) {
             Dialogs.showErrorDialog(context, state.errorMessage);
@@ -128,6 +132,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
           onPressed: state.status == PengeluaranStatus.loading
               ? null
               : () {
+                  print(state.pengeluaran.runtimeType);
                   if (selectedDate != null) {
                     context.read<PengeluaranBloc>().add(InsertPengeluaranEvent(
                         barang: barang,

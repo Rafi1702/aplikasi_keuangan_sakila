@@ -77,7 +77,9 @@ class BarangBloc extends Bloc<BarangEvent, BarangState> {
     List<DataBarang> updatedBarang = state.barang
         .map((e) => e.kuantitas! > e.stokBarang
             ? e.copyWith(stokBarang: e.stokBarang)
-            : e.copyWith(stokBarang: e.stokBarang - (e.kuantitas ?? 0)))
+            : event.jenisTransaksi == 'Pengeluaran'
+                ? e.copyWith(stokBarang: e.stokBarang + (e.kuantitas ?? 0))
+                : e.copyWith(stokBarang: e.stokBarang - (e.kuantitas ?? 0)))
         .toList();
     emit(state.copyWith(status: BarangStatus.loaded, barang: updatedBarang));
   }

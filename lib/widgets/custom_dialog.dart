@@ -15,6 +15,29 @@ class Dialogs {
           ]);
         });
   }
+
+  static void commonDialog(
+      {required BuildContext context,
+      VoidCallback? onPressed,
+      required String message}) {
+    showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(content: Text(message), actions: [
+            ElevatedButton(
+              child: const Text('Tidak'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            const SizedBox(width: 10.0),
+            ElevatedButton(
+              onPressed: onPressed,
+              child: const Text('Ya'),
+            ),
+          ]);
+        });
+  }
 }
 //   static void showLoadingDialog(BuildContext context, GlobalKey key) async {
 //     return showDialog<void>(

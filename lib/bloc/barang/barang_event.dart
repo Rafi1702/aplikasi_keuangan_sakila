@@ -45,4 +45,11 @@ class KurangiKuantitasEvent extends BarangEvent {
   List<Object> get props => [id];
 }
 
-class ResetStokEvent extends BarangEvent {}
+class ResetStokEvent extends BarangEvent {
+  final String jenisTransaksi;
+
+  const ResetStokEvent({required this.jenisTransaksi});
+
+  @override
+  List<Object> get props => [jenisTransaksi];
+}
