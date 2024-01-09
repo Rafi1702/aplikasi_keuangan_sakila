@@ -23,6 +23,9 @@ class BarangService {
           Uri.parse('${HttpClient.API_URL}/barang'),
           body: jsonEncode(barang.toJson()));
 
+      if(response.statusCode == 409){
+        throw CustomException('Barang Sudah ada di Daftar Barang');
+      }
       return DataBarang.fromJson(jsonDecode(response.body)['data']);
     } on SocketException {
       throw CustomException(SOCKET_EXCEPTION);

@@ -61,13 +61,7 @@ class _TransaksiBaruPageState extends State<TransaksiBaruPage> {
         },
         listener: (context, state) {
           if (state.status == PengeluaranStatus.loaded) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text('Berhasil Menambahkan Transaksi'),
-              action: SnackBarAction(
-                label: 'close',
-                onPressed: () {},
-              ),
-            ));
+            Dialogs.showSuccessDialog(context, 'Transaksi Berhasil Ditambah');
 
             context
                 .read<BarangBloc>()

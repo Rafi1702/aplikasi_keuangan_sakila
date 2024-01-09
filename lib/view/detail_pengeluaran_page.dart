@@ -19,13 +19,22 @@ class DetailPengeluaranPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (state is DetailPengeluaranLoaded) {
-              return ListView.builder(
-                itemCount: state.detail.data.barangs.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                      child: Text(state.detail.data.barangs[index].namaBarang));
-                },
-              );
+              return Column(children:[Text(state.detail.data.tanggalPengeluaran.toString()),
+            ListView.builder(
+            shrinkWrap: true,
+            itemCount: state.detail.data.barangs.length,
+            itemBuilder: (context, index) {
+            return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,children:[
+
+            Text(state.detail.data.barangs[index].namaBarang),
+            Text(state.detail.data.barangs[index].detailPengeluaran.kuantitas.toString()),
+            Text(state.detail.data.barangs[index].hargaBarang.toString()),
+
+            ],);
+            // return Container(
+            //     child: Text(state.detail.data.barangs[index].namaBarang));
+            },
+            )]);
             }
             if (state is DetailPengeluaranError) {
               return Center(child: Text(state.error));

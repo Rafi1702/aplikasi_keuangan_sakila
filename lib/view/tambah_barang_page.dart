@@ -32,6 +32,15 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    _namaBarangController.dispose();
+    _hargaBarangController.dispose();
+    _stokController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _buildBody();
   }
@@ -45,8 +54,16 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
           listenWhen: (previous, current) =>
               current.isInserting || previous.isInserting,
           listener: (context, state) {
+
             if (state.status == BarangStatus.error) {
               Dialogs.showErrorDialog(context, state.errorMessage);
+            }
+            if (state.status == BarangStatus.loaded) {
+              _namaBarangController.clear();
+              _hargaBarangController.clear();
+              _stokController.clear();
+
+              Dialogs.showSuccessDialog(context, 'Barang Berhasil Ditambah');
             }
           },
           child: Column(
@@ -58,7 +75,7 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               const SizedBox(height: 100.0),
               SizedBox(
                 width: double.infinity,
-                child: CustomButton(
+                child:CustomButton(
                   color: AppColors.secondaryColor,
                   widget: const Text("Input Barang"),
                   onPressed: () {
@@ -169,72 +186,10 @@ class _TambahBarangPageState extends State<TambahBarangPage> {
               return GlobalValidator.fieldBarang(val, 'Stok');
             },
           ),
-          // Container(
-          //   decoration: BoxDecoration(
-          //     borderRadius: BorderRadius.circular(8.0),
-          //     border: Border.all(width: 0.5),
-          //   ),
-          //   child: Row(
-          //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //       children: [
-          //         IconButton(
-          //           icon: const Icon(Icons.remove),
-          //           onPressed: () {
-
-          //           },
-          //         ),
-          //         Text(quantity.toString()),
-          //         IconButton(
-          //           icon: const Icon(Icons.add),
-          //           onPressed: () {
-
-          //           },
-          //         ),
-          //       ]),
-          // ),
         ],
       ),
     );
   }
 
-  // Widget _quantityWidget() {
-  //   return SizedBox(
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Container(
-  //           decoration: const BoxDecoration(
-  //             borderRadius: BorderRadius.only(
-  //               topLeft: Radius.circular(10.0),
-  //               bottomLeft: Radius.circular(10.0),
-  //             ),
-  //             color: AppColors.secondaryColor,
-  //           ),
-  //           child: const Icon(Icons.remove),
-  //         ),
-  //         const Expanded(
-  //           child: Card(
-  //             shape: RoundedRectangleBorder(),
-  //             color: Colors.white,
-  //             child: Text(
-  //               "Halo",
-  //               style: TextStyle(fontSize: 16.0),
-  //               textAlign: TextAlign.center,
-  //             ),
-  //           ),
-  //         ),
-  //         Container(
-  //           decoration: const BoxDecoration(
-  //             borderRadius: BorderRadius.only(
-  //               topRight: Radius.circular(10.0),
-  //               bottomRight: Radius.circular(10.0),
-  //             ),
-  //             color: AppColors.secondaryColor,
-  //           ),
-  //           child: const Icon(Icons.add),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
+
 }

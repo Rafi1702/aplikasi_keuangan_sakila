@@ -26,8 +26,10 @@ class _ListBarangPageState extends State<ListBarangPage> {
       builder: (context, state) {
         if (state.status == BarangStatus.loading) {
           return const Center(child: CircularProgressIndicator());
+        } if(state.status == BarangStatus.error && state.barang.isEmpty){
+          return Center(child: Text(state.errorMessage));
         }
-        if (state.status == BarangStatus.loaded) {
+
           return state.barang.isEmpty
               ? const Center(
                   child: Text('Barang Kosong'),
@@ -83,11 +85,9 @@ class _ListBarangPageState extends State<ListBarangPage> {
                     );
                   },
                 );
-        }
-        if (state.status == BarangStatus.error) {
-          return Center(child: Text(state.errorMessage));
-        }
-        return Container();
+
+
+
       },
     );
   }

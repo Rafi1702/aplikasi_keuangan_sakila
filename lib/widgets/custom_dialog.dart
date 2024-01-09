@@ -16,6 +16,18 @@ class Dialogs {
         });
   }
 
+
+
+  static void showSuccessDialog(BuildContext context, String message){
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content:  Text(message),
+      action: SnackBarAction(
+        label: 'close',
+        onPressed: () {},
+      ),
+    ));
+  }
+
   static void commonDialog(
       {required BuildContext context,
       VoidCallback? onPressed,
